@@ -11,6 +11,10 @@ import org.apache.log4j.Logger;
 import ovation.odata.service.JerseyAuthenticator;
 
 /**
+ * NOTE - this class is here for safe-keeping - it is not used in the current code-base, but was 
+ * considered as a possibility for more robust auth - the problem is it directly depends on the 
+ * Tomcat-specific class RealmBase in order to plug in JAAS which makes it very not portable.
+ * 
  * based on org.apache.catalina.realm.UserDatabaseRealm 
  * to use:
  * <Realm className="ovation.odata.service.tomcat.OvationDBRealm"/>

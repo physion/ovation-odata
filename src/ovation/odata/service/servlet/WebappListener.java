@@ -1,6 +1,5 @@
 package ovation.odata.service.servlet;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -10,7 +9,6 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import ovation.odata.util.CollectionUtils;
-import ovation.odata.util.DataContextCache;
 import ovation.odata.util.PropertyManager;
 import ovation.odata.util.Props;
 
@@ -25,25 +23,17 @@ public class WebappListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		_log.info("context started");
 		ServletContext ctx = event.getServletContext();
+
 		Properties rootProps = PropertyManager.getProperties(null);
+		// add web.xml init-params to the global root properties
 		for (String name : CollectionUtils.makeIterable(ctx.getInitParameterNames())) {
 			rootProps.setProperty(name, ctx.getInitParameter(name));
 		}
-		// check for props file prop and load that as well
-		String propFilePath = rootProps.getProperty("ovodata.props");
-		if (propFilePath != null) {
-			FileInputStream fis = null;
-			try {
-				fis = new FileInputStream(propFilePath);
-				rootProps.load(fis);
-			} catch (Exception ex) {
-				_log.warn("failed to load '" + propFilePath + "'");
-			} finally {
-				try { fis.close(); } catch (Exception ignore) {}
-			}
-		}
-		
-		String dbFile = System.getenv("OVODATA_CONNECTION_FILE");
+
+		// this environment variable must take precedence over all other settings (including web.xml <init-params>)
+		// this code is duplicated in PropertyManager to maintain consistent prop loading with stand-alone servers
+		// (which don't have a web.xml collection of over-rides).
+		String dbFile = System.getenv(PropertyManager.OVODATA_CON_FILE);
 		if (dbFile != null) {
 			rootProps.setProperty(Props.DC_FILE_DEFAULT, dbFile);
 		}

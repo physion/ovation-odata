@@ -8,7 +8,7 @@ import org.core4j.Func1;
 
 import ovation.DerivedResponse;
 import ovation.Epoch;
-import ovation.NumericDataException;
+//import ovation.NumericDataException;
 import ovation.odata.model.dao.MapEntry;
 import ovation.odata.util.CollectionUtils;
 
@@ -53,6 +53,7 @@ public class DerivedResponseModel extends ExtendedPropertyModel<String,DerivedRe
 			case Tags:					return CollectionUtils.makeIterable(obj.getTags());
 	        // EntityBase
 			case MyProperties:			return MapEntry.makeIterable(obj.getMyProperties());		// String,Object
+//			case MyResources:			return obj.getMyResources();
 			case Properties:			return MapEntry.makeIterable(obj.getProperties());			// String,Object[]
 			case Resources:				return obj.getResourcesIterable();
 		}
@@ -88,7 +89,8 @@ public class DerivedResponseModel extends ExtendedPropertyModel<String,DerivedRe
 				case URIString:			return obj.getURIString();
 				case UUID:				return obj.getUuid();
 			}
-		} catch (NumericDataException ndx) {
+		} catch (RuntimeException ndx) { 
+			// was NumericDataException, but that's no longer public (??)
 			// there are several reasons this exception is thrown; not all of them are due to type-mismatch (some are just thrown because there's no data at all)
 		}
 		return null;

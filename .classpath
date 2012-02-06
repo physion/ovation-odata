@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="ovodata-test/" kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="conf"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="lib/guava-r09.jar"/>
+	<classpathentry kind="lib" path="lib/odata4j-0.5-bundle-custom.jar" sourcepath="/odata4j-core-git"/>
+	<classpathentry kind="lib" path="lib/catalina-7.0.21.jar" sourcepath="C:/Users/Ron/.m2/repository/org/apache/tomcat/tomcat-catalina/7.0.21/tomcat-catalina-7.0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-3.0.jar" sourcepath="C:/Users/Ron/.m2/repository/org/apache/tomcat/tomcat-servlet-api/7.0.22/tomcat-servlet-api-7.0.22-sources.jar"/>
+	<classpathentry kind="lib" path="lib/ovation-1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

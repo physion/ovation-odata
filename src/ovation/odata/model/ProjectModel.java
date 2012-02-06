@@ -42,42 +42,27 @@ public class ProjectModel extends ExtendedPropertyModel<String,Project> {
 	
 	public Iterable<?> getCollectionValue(Object target, String collectionName) {
 		Project obj = (Project)target;
-		switch (CollectionName.valueOf(collectionName)) {
+		CollectionName col = CollectionName.valueOf(collectionName); 
+		switch (col) {
 			case AnalysisRecords:	return obj.getAnalysisRecordIterable();
 			case Experiments:		return CollectionUtils.makeIterable(obj.getExperiments());
 			case MyAnalysisRecords:	return obj.getMyAnalysisRecordIterable();
-			// TaggableEntityBase
-			case KeywordTags:		return CollectionUtils.makeIterable(obj.getKeywordTags());
-			case MyKeywordTags:		return CollectionUtils.makeIterable(obj.getMyKeywordTags());
-			case MyTags:			return CollectionUtils.makeIterable(obj.getMyTags());
-			case Tags:				return CollectionUtils.makeIterable(obj.getTags());
-			// EntityBase
-			case MyProperties:		return MapEntry.makeIterable(obj.getMyProperties());
-			case Properties:		return MapEntry.makeIterable(obj.getProperties());
-			case Resources:			return obj.getResourcesIterable();
 		}
-		return null;
+		// look for it in base-type(s) of obj
+		return ExtendedPropertyModel.getCollectionValue(obj, col);
 	}
 
 	public Object getPropertyValue(Object target, String propertyName) {
 		Project obj = (Project)target;
-		switch(PropertyName.valueOf(propertyName)) {
+		PropertyName prop = PropertyName.valueOf(propertyName);
+		switch(prop) {
 			case Name:					return obj.getName();
 			// PurposeAndNotesEntity
 			case Notes:					return obj.getNotes();
 			case Purpose:				return obj.getPurpose();
-			// TimelineElement
-			case EndTime:				return obj.getEndTime();
-			case StartTime:				return obj.getStartTime();
-			// EntityBase
-			case Owner:					return obj.getOwner();
-			case URI:					return obj.getURI();
-			case UUID:					return obj.getUuid();
-			case SerializedLocation:	return obj.getSerializedLocation();
-			case SerializedName:		return obj.getSerializedName();
-			case URIString:				return obj.getURIString();
 		}
-		return null;
+		// look for it in base-type(s) of obj
+		return ExtendedPropertyModel.getPropertyValue(obj, prop);
 	}
 
 	public Func<Iterable<Project>> allGetter() {

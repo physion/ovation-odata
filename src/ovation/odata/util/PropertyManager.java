@@ -10,10 +10,43 @@ import org.apache.log4j.Logger;
 import com.google.common.collect.Maps;
 
 public class PropertyManager {
-	public static final Logger _log = Logger.getLogger(PropertyManager.class);
+	public static final Logger _log 				= Logger.getLogger(PropertyManager.class);
+	public static final String OVODATA_CON_FILE 	= "OVODATA_CONNECTION_FILE";
+	public static final String OVODATA_PROP_FILE 	= "ovodata.props";
+	public static final String OVODATA_PROP_FILE_DEF= "/var/lib/ovation/ovodata.props";
+	
+	// map of classes to their associated properties (not really used, except for the 'null' entry, which is the root prop)
 	private static final HashMap<Class<?>, Properties> _propertiesMap = Maps.newHashMap();
 	static {
-		setProperties(null, System.getProperties());	// start with system props
+		Properties rootProps = new Properties();
+		// set up the defaults
+		rootProps.setProperty(OVODATA_PROP_FILE, OVODATA_PROP_FILE_DEF);
+		rootProps.putAll(System.getProperties()); // add system props
+		
+		// check for props file prop and load that on top of System props
+		String propFilePath = rootProps.getProperty(OVODATA_PROP_FILE);
+		if (propFilePath != null) {
+			FileInputStream fis = null;
+			try {
+				fis = new FileInputStream(propFilePath);
+				rootProps.load(fis);
+			} catch (Exception ex) {
+				_log.warn("failed to load '" + propFilePath + "'");
+			} finally {
+				try { fis.close(); } catch (Exception ignore) {}
+			}
+		}
+
+		// check for OVODATA_CONNECTION_FILE environment variable as final over-ride of Ovation DB file
+		String dbFile = System.getenv(OVODATA_CON_FILE);
+		if (dbFile != null) {
+			rootProps.setProperty(Props.DC_FILE_DEFAULT, dbFile);
+		}
+		
+		setProperties(null, rootProps);
+		if (_log.isDebugEnabled()) {
+			_log.debug("default root props : " + rootProps);
+		}
 	}
 	
 	/**
@@ -36,7 +69,7 @@ public class PropertyManager {
 			String propName = "props";
 			int nextDot = 0;
 			while (true) {
-				_log.debug(propName);
+				_log.trace(propName);
 				String propFile = System.getProperty(propName, null);
 				if (propFile != null) {
 					FileInputStream fis = null;

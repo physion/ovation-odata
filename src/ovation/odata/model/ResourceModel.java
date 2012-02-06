@@ -48,6 +48,7 @@ public class ResourceModel extends ExtendedPropertyModel<String,Resource> {
 			case Tags:				return CollectionUtils.makeIterable(obj.getTags());
 			// EntityBase
 			case MyProperties:		return MapEntry.makeIterable(obj.getMyProperties());
+//			case MyResources:		return CollectionUtils.makeIterable(obj.getMyResources());
 			case Properties:		return MapEntry.makeIterable(obj.getProperties());
 			case Resources:			return obj.getResourcesIterable();
 		}

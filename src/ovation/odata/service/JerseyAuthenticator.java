@@ -94,10 +94,13 @@ public class JerseyAuthenticator extends Authenticator {
 							return new Authenticator.Success(new HttpPrincipal(userName, "ovodata"));
 						}
 					} catch (UserAuthenticationException uax) {
-						_log.warn("failed to authenticate '" + userName + "'");
+					} catch (OvationException ox) {
+						// FIXME - special-case for change in auth failure in DataContext.authenticateUser()
+						if ("Incorrect password".equals(ox.getMessage()) == false) {
+							throw ox;
+						}
 					}
 					_log.info("failed to authenticate user '" + userName + "'");
-					return new Authenticator.Failure(Response.Status.FORBIDDEN.getStatusCode());
 				} catch (IllegalArgumentException iax) {
 					_log.error(iax.toString());
 				}

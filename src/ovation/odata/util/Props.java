@@ -9,7 +9,7 @@ public abstract class Props {
 	public static final String DC_EXPIRY_MS			= "ovodata.DataContext.cacheExpiryMs";
 	public static final long   DC_EXPIRY_MS_DEFAULT = 0;	// disable caching by default
 	public static final String SERVER_NAME			= "ovodata.OData4JServer.name";
-	public static final String SERVER_NAME_DEFAULT  = "Ovation"; 
+	public static final String SERVER_NAME_DEFAULT  = "Ovodata"; 
 	public static final String SERVER_URL           = "ovodata.OData4JServer.url";
 	public static final String SERVER_MAX_RESULTS	= "ovodata.OData4JServer.maxResults";
 	public static final int		SERVER_MAX_RESULTS_DEFAULT = 100;

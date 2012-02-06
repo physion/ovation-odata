@@ -7,7 +7,6 @@ import org.core4j.Func;
 import org.core4j.Func1;
 
 import ovation.Epoch;
-import ovation.NumericDataException;
 import ovation.Response;
 import ovation.odata.model.dao.MapEntry;
 import ovation.odata.util.CollectionUtils;
@@ -26,8 +25,8 @@ public class ResponseModel extends ExtendedPropertyModel<String,Response> {
 	
 	static {
 		_propertyTypeMap.put(PropertyName.Epoch.name(),         Epoch.class);
-		_propertyTypeMap.put(PropertyName.SamplingRates.name(),	double[].class);
-		_propertyTypeMap.put(PropertyName.SamplingUnits.name(),	String[].class);
+		_propertyTypeMap.put(PropertyName.SamplingRate.name(),	Double.class);
+		_propertyTypeMap.put(PropertyName.SamplingUnits.name(),	String.class);
         
         addResponseDataBase(_propertyTypeMap, _collectionTypeMap);
 	}
@@ -50,6 +49,7 @@ public class ResponseModel extends ExtendedPropertyModel<String,Response> {
 			case Tags:					return CollectionUtils.makeIterable(obj.getTags());
 	        // EntityBase
 			case MyProperties:			return MapEntry.makeIterable(obj.getMyProperties());		// String,Object
+//			case MyResources:			return CollectionUtils.makeIterable(obj.getMyResources());
 			case Properties:			return MapEntry.makeIterable(obj.getProperties());			// String,Object[]
 			case Resources:				return obj.getResourcesIterable();
 		}
@@ -61,10 +61,10 @@ public class ResponseModel extends ExtendedPropertyModel<String,Response> {
 		try {
 			switch(PropertyName.valueOf(propertyName)) {
 				case Epoch: 			return obj.getEpoch();
-				case SamplingRates: 	return obj.getSamplingRates();
+				case SamplingRate: 		return obj.getSamplingRates();	// FIXME from double to double[]
 				case SamplingUnits:		return obj.getSamplingUnits();
 	
-		        // ResponseDataBase
+		        // ResponseDataBase - TODO, not public and no interface
 				case Data:				return obj.getData();
 				case DataBytes:			return obj.getDataBytes();
 				case DoubleData:		return obj.getDoubleData();
@@ -74,7 +74,7 @@ public class ResponseModel extends ExtendedPropertyModel<String,Response> {
 				case MatlabShape:		return obj.getMatlabShape();
 				case NumericDataType:	return obj.getNumericDataType();
 				case Shape:				return obj.getShape();
-		        // IOBase
+		        // IOBase - TODO, not public and no interface
 				case ExternalDevice:	return obj.getExternalDevice();
 				case Units:				return obj.getUnits();
 		        // TaggableEntityBase
@@ -86,7 +86,7 @@ public class ResponseModel extends ExtendedPropertyModel<String,Response> {
 				case URIString:			return obj.getURIString();
 				case UUID:				return obj.getUuid();
 			}
-		} catch (NumericDataException ndx) {
+		} catch (RuntimeException ndx) {	// used to be NumericDataException
 			// there are several reasons this exception is thrown; not all of them are due to type-mismatch (some are just thrown because there's no data at all)
 		}
 		return null;

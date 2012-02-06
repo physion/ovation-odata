@@ -58,6 +58,7 @@ public class AnalysisRecordModel extends ExtendedPropertyModel<String,AnalysisRe
 			case Tags:				return CollectionUtils.makeIterable(obj.getTags());
 			// EntityBase
 			case MyProperties:		return MapEntry.makeIterable(obj.getMyProperties());
+//			case MyResources:		return CollectionUtils.makeIterable(obj.getMyResources());
 			case Properties:		return MapEntry.makeIterable(obj.getProperties());
 			case Resources:			return obj.getResourcesIterable();
 		}
@@ -66,22 +67,16 @@ public class AnalysisRecordModel extends ExtendedPropertyModel<String,AnalysisRe
 
 	public Object getPropertyValue(Object target, String propertyName) {
 		AnalysisRecord obj = (AnalysisRecord)target;
-		switch(PropertyName.valueOf(propertyName)) {
+		PropertyName prop = PropertyName.valueOf(propertyName);
+		switch (prop) {
 			case EntryFunctionName: 	return obj.getEntryFunctionName();
 			case Name:					return obj.getName();
 			case Notes:					return obj.getNotes();
 			case Project:				return obj.getProject();
 			case ScmRevision:			return Integer.valueOf(obj.getScmRevision());
 			case ScmURL:				return obj.getScmURL();
-			// EntityBase
-			case Owner:					return obj.getOwner();
-			case URI:					return obj.getURI();
-			case UUID:					return obj.getUuid();
-			case SerializedLocation:	return obj.getSerializedLocation();
-			case SerializedName:		return obj.getSerializedName();
-			case URIString:				return obj.getURIString();
 		}
-		return null;
+		return ExtendedPropertyModel.getPropertyValue(obj, prop);
 	}
 
 	public Class<AnalysisRecord> 	getEntityType() { return AnalysisRecord.class;	}

@@ -59,7 +59,7 @@ public class SourceModel extends ExtendedPropertyModel<String,Source> {
 			case Tags:					return CollectionUtils.makeIterable(obj.getTags());
 	        // EntityBase
 			case MyProperties:			return MapEntry.makeIterable(obj.getMyProperties());		// String,Object
-			
+//			case MyResources:			return CollectionUtils.makeIterable(obj.getMyResources());
 			case Properties:			return MapEntry.makeIterable(obj.getProperties());			// String,Object[]
 			case Resources:				return obj.getResourcesIterable();
 		}

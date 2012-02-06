@@ -2,67 +2,82 @@
 <project name="OvoData" default="all">
     <description>Ovation OData Web-service</description>
 
-	<property name="dir.src" 			value="${basedir}/src"/>
-	<property name="dir.compile" 		value="${basedir}/classes"/>
-	<property name="dir.war" 			value="${basedir}/war"/>
-	<property name="dir.lib"			value="${basedir}/lib"/>
-	<property name="dir.3rdparty-tmp" 	value="${basedir}/3pjars"/>
-	<property name="dir.distrib" 		value="${basedir}/distrib"/>
-	<property name="dir.dotcloud"       value="${basedir}/dotcloud/odata"/>
-	<property name="jar.release"       	value="ovodata.jar"/>
-	<property name="war.release"		value="ovodata.war"/>
-	<property name="war.release.root"   value="ROOT.war"/>
-	<property name="guava.jar.path"     value="${dir.lib}/guava-r09.jar"/>
-	<property name="odata4j.jar.path"   value="${dir.lib}/odata4j-0.5-bundle-custom.jar"/>
-	<property name="ovation.jar.path"   value="${dir.lib}/ovation.jar"/>
-	
+    <property name="dir.src"            value="${basedir}/src"/>
+    <property name="dir.compile"        value="${basedir}/classes"/>
+    <property name="dir.war"            value="${basedir}/war"/>
+    <property name="dir.lib"            value="${basedir}/lib"/>
+    <property name="dir.3rdparty-tmp"   value="${basedir}/3pjars"/>
+    <property name="dir.distrib"        value="${basedir}/distrib"/>
+    <property name="dir.dotcloud"       value="${basedir}/dotcloud/odata"/>
+    <property name="jar.release"        value="ovodata.jar"/>
+    <property name="war.release"        value="ovodata.war"/>
+    <!-- TODO think about these props... -->
+<!--    <property name="war.release.root"   value="ROOT.war"/> -->
+    <property name="guava.jar.path"     value="${dir.lib}/guava-r09.jar"/>
+    <property name="odata4j.jar.path"   value="${dir.lib}/odata4j-0.5-bundle-custom.jar"/>
+    <property name="ovation.jar.path"   value="${dir.lib}/ovation-1.1.jar"/>
+    
     <fileset id="set.jars" dir="${dir.lib}">
         <include name="guava-r09.jar" />
         <include name="odata4j-0.5-bundle-custom.jar" />
-        <include name="ovation.jar" />
+        <include name="ovation-1.1.jar" />
     </fileset>
-	
-    <target name="all" depends="jar" description="build jar">
+    
+    <target name="all" depends="clean, war" description="clean build of source, jar and war">
     </target>
 
-	<target name="clean" description="delete all build products">
+    <target name="clean" description="delete all build products">
         <delete dir="${dir.compile}" failonerror="no"/>
         <delete dir="${dir.distrib}" failonerror="no"/>
-	</target>
-	
+    </target>
+
     <target name="init" depends="" description="build war">
-		<mkdir dir="${dir.compile}"/>    	
+        <mkdir dir="${dir.compile}"/>        
     </target>
 
     <target name="compile" depends="init" description="build war">
         <javac nowarn="no" fork="no" compiler="javac1.6" source="1.6" target="1.6" debug="yes" verbose="no" srcdir="${dir.src}" destdir="${dir.compile}" includeantruntime="false">
-        	<classpath>
-        		<fileset refid="set.jars"/>
-        		<filelist files="${dir.lib}/servlet-api-3.0.jar"/>
-        	</classpath>
+            <classpath>
+                <fileset refid="set.jars"/>
+                <filelist files="${dir.lib}/servlet-api-3.0.jar"/>
+            </classpath>
         </javac>
     </target>
 
-    <target name="jar" depends="compile" description="build jar">
-		<mkdir dir="${dir.distrib}"/>
-		<jar jarfile="${dir.distrib}/${jar.release}">
-    		<fileset dir="${dir.compile}"/>
-	    	<manifest>
-	    		<attribute name="Main-Class" value="ovation.odata.service.StandaloneJerseyServer"/>
-	    	</manifest>
-	    	<zipfileset includes="**/*" src="${ovation.jar.path}"/>
+    <target name="jar" depends="compile" description="build war">
+        <mkdir dir="${dir.3rdparty-tmp}"/>
+        <!-- extract all the files in the jars and then repackage into release jar -->
+        <unjar dest="${dir.3rdparty-tmp}" overwrite="true">
+            <fileset refid="set.jars"/>
+        </unjar>
+        <mkdir dir="${dir.distrib}"/>
+        <jar jarfile="${dir.distrib}/${jar.release}">
+            <fileset dir="${dir.3rdparty-tmp}">
+                <exclude name="META-INF/MANIFEST.MF META-INF/*.rsa META-INF/*.sf META-INF/maven/** META-INF/LICENSE* META-INF/NOTICE* META-INF/DEPENDENCIES*"/>
+            </fileset>
+            <fileset dir="${dir.compile}"/>
+            <manifest>
+                <attribute name="Main-Class" value="ovation.odata.service.StandaloneJerseyServer"/>
+            </manifest>
+<!-- TODO think about this... what's the purpose of these lines? -->
+            <zipfileset includes="**/*" src="${ovation.jar.path}"/>
             <zipfileset includes="**/*" src="${odata4j.jar.path}"/>
             <zipfileset includes="**/*" src="${guava.jar.path}"/>
-    	</jar>
+        </jar>
+        <delete dir="${dir.3rdparty-tmp}"/>
     </target>
 
     <target name="war" depends="jar" description="build war">
-    	<war basedir="${dir.war}" includes="**/*" warfile="${dir.distrib}/${war.release}">
-    		<lib file="${dir.distrib}/${jar.release}"/>
-    	</war>
-    	<war basedir="${dir.war}" includes="**/*" warfile="${dir.dotcloud}/${war.release.root}">
-    		<lib file="${dir.distrib}/${jar.release}"/>
-    	</war>
+        <war basedir="${dir.war}" includes="**/*" warfile="${dir.distrib}/${war.release}">
+            <lib file="${dir.distrib}/${jar.release}"/>
+        </war>
+        <copy file="${dir.distrib}/${war.release}" tofile="${dir.dotcloud}/ROOT.war"/>
+<!-- isn't this the same as copying the war above?  not sure why this target is here, tho.  typically it's easier to call it ROOT.war 
+when you copy it (or better yet, symlink it) in the tomcat/webapps directory.            
+        <war basedir="${dir.war}" includes="**/*" warfile="${dir.dotcloud}/${war.release.root}">
+               <lib file="${dir.distrib}/${jar.release}"/>
+        </war>
+-->        
     </target>
     
     <target name="runserver" depends="jar" description="run test server">

@@ -35,7 +35,7 @@ public class StandaloneJerseyServer {
 	public static void main(String[] args) {
 		Properties props = PropertyManager.getProperties(StandaloneJerseyServer.class);
 		
-		String  serviceUrl 	= props.getProperty(Props.SERVER_URL, "http://localhost:8887/" + OvationOData4JProducer.getServiceName() + ".svc/"); 
+		String  serviceUrl 	= props.getProperty(Props.SERVER_URL, "http://localhost:8887/ovodata/" + OvationOData4JProducer.getServiceName() + ".svc/"); 
 		boolean logRequest 	= Props.getProp(props, Props.LOG_REQUEST, Props.LOG_REQUEST_DEFAULT);
 		boolean logResponse	= Props.getProp(props, Props.LOG_RESPONSE, Props.LOG_RESPONSE_DEFAULT);
 		

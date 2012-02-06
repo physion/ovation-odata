@@ -42,6 +42,7 @@ public class KeywordTagModel extends ExtendedPropertyModel<String,KeywordTag> {
 			case Tagged:			return CollectionUtils.makeIterable(obj.getTagged());
 			// EntityBase
 			case MyProperties:		return MapEntry.makeIterable(obj.getMyProperties());
+//			case MyResources:		return CollectionUtils.makeIterable(obj.getMyResources());
 			case Properties:		return MapEntry.makeIterable(obj.getProperties());
 			case Resources:			return obj.getResourcesIterable();
 		}

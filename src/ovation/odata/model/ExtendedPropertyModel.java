@@ -15,6 +15,10 @@ import org.odata4j.producer.QueryInfo;
 import org.odata4j.producer.inmemory.PropertyModel;
 
 import ovation.ExternalDevice;
+import ovation.IAnnotatableEntityBase;
+import ovation.IEntityBase;
+import ovation.ITaggableEntityBase;
+import ovation.ITimelineElement;
 import ovation.KeywordTag;
 import ovation.NumericData;
 import ovation.NumericDataType;
@@ -144,7 +148,7 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
     public static void 		setQueryInfo(QueryInfo info) { if (info != null) { _threadQueryInfo.set(info); } else { _threadQueryInfo.remove(); } }
     public static QueryInfo getQueryInfo()             	 { return _threadQueryInfo.get(); }
     
-    /** register model handlers for all standard ovation classes */
+    /** register model handlers for all Ovation API model classes */
     public static void registerOvationModel() {
         ExtendedPropertyModel.addPropertyModel(new ProjectModel());
         ExtendedPropertyModel.addPropertyModel(new AnalysisRecordModel());
@@ -164,9 +168,9 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
         // TODO Query?
     }
     
-    /** every property of every child-type - ensures consistent naming */
+    /** every property of every child-type - ensures consistent naming and also makes common util functions doable */
     protected enum PropertyName     {
-        SamplingRates, SamplingUnits,
+        SamplingRate, SamplingUnits,
         ParentRoot,
         PluginID,
         Url,
@@ -196,7 +200,7 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
         AnalysisParameters,  
         EpochGroups, Epochs, ExternalDevices, Projects, Sources, 
         KeywordTags, MyKeywordTags, MyTags, Tags, 
-        MyProperties, MyResources, Properties, Resources 
+        MyProperties, /*MyResources,*/ Properties, Resources 
     };
     
     protected static void addPurposeAndNotesEntity(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
@@ -228,7 +232,7 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
     }
     protected static void addIOBase(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
         propertyTypeMap.put(PropertyName.ExternalDevice.name(),     	ExternalDevice.class);
-        propertyTypeMap.put(PropertyName.Units.name(),              	String[].class);
+        propertyTypeMap.put(PropertyName.Units.name(),              	String.class);
         collectionTypeMap.put(CollectionName.DeviceParameters.name(),   MapEntry.class);
         // base-type data
         addTaggableEntityBase(propertyTypeMap, collectionTypeMap);
@@ -260,13 +264,205 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
         propertyTypeMap.put(PropertyName.URIString.name(),          	String.class);
         propertyTypeMap.put(PropertyName.UUID.name(),               	String.class);
         collectionTypeMap.put(CollectionName.MyProperties.name(),   	MapEntry.class);
-        collectionTypeMap.put(CollectionName.MyResources.name(),    	Resource.class);
+//        collectionTypeMap.put(CollectionName.MyResources.name(),    	Resource.class);
         collectionTypeMap.put(CollectionName.Properties.name(),     	MapEntry.class);
         collectionTypeMap.put(CollectionName.Resources.name(),			Resource.class);
         // no parent type within Ovation
     }
     
+    /**
+     * base-class-like utility methods for all the models to handle base-type collections 
+     * (to reduce large amounts of duplicate code throughout the model adapters)
+     * 
+     * model-hierarchy (if this changes this code must be updated)
+     *  AnalysisRecord											-> AnnotatableEntityBase -> TaggableEntityBase -> EntityBase -> ooObj -> ooAbstractObj -> 
+     *  DerivedResp -> ResponseDataBase      -> IOBase 			-> AnnotatableEntityBase -> ...
+     *  EpochGroup 							 -> TimelineElement -> AnnotatableEntityBase -> ...
+     *  Epoch 								 -> TimelineElement -> ...
+     *  Experiment 	-> PurposeAndNotesEntity -> TimelineElement -> ...
+     *  ExternalDevi								   			-> AnnotatableEntityBase -> ...
+     *  KeywordTag 																					  		   -> EntityBase -> ...
+     *  Project 	-> PurposeAndNotesEntity -> ...
+     *  Resource 									   			-> AnnotatableEntityBase -> ...
+     *  Response 	-> ResponseDataBase      -> ...
+     *  Source 										   			-> AnnotatableEntityBase -> ...
+     *  Stimulus 							 -> IOBase          -> ...
+     *  URLResource	-> Resource              -> ...
+     * 
+     * @param obj - the base-type object
+     * @param col - the collection to extract from the base-type object
+     * @return an Iterable<?> over the specified collection
+     */
+/*    
+    protected static Iterable<?> getCollectionValue(IResponseDataBase obj, CollectionName col) {
+    	switch (col) {
+    		// TODO
+    	}
+    	return getCollectionValue((IIOBase)obj, col); 
+    }
+*//*
+    protected static Iterable<?> getCollectionValue(IPurposeAndNotesEntity obj, CollectionName col) {
+    	switch (col) {
+    		// TODO
+    	}
+    	return getCollectionValue((ITimelineElement)obj, col); 
+    }
+*/    
+    protected static Iterable<?> getCollectionValue(ITimelineElement obj, CollectionName col) {
+    	switch (col) {
+    		// no collections
+    	}
+    	return getCollectionValue((IAnnotatableEntityBase)obj, col); 
+    }
+/*
+    protected static Iterable<?> getCollectionValue(IResponseDataBase obj, CollectionName col) {
+    	switch (col) {
+    	}
+    	return getCollectionValue((ITaggableEntityBase)obj, col);
+    }
+*//*    
+    protected static Iterable<?> getCollectionValue(IIOBase obj, CollectionName col) {
+    	switch (col) {
+    	}
+    	return getCollectionValue((ITaggableEntityBase)obj, col);
+    }
+*/    
+    protected static Iterable<?> getCollectionValue(IAnnotatableEntityBase obj, CollectionName col) {
+    	switch (col) {
+/* TOOD - add all these
+  public abstract Set<String> 	getAnnotationGroupTagSet();
+  public abstract String[] 		getAnnotationGroupTags();
+  public abstract Set<String> 	getMyAnnotationGroupTagSet();
+  public abstract String[] 		getMyAnnotationGroupTags();
+  public abstract IAnnotation[] getAnnotations();
+  
+  public abstract Iterable<IAnnotation> 	getAnnotationsIterable();
+  public abstract Iterable<IAnnotation> 	getMyAnnotationsIterable();
+  public abstract IAnnotation[] 			getMyAnnotations();
+  public abstract IAnnotation[] 			getAnnotations(String paramString);
+  public abstract IAnnotation[] 			getMyAnnotations(String paramString);
+  
+  public abstract Iterable<IAnnotation> 		getAnnotationsIterable(String paramString);
+  public abstract Iterable<IAnnotation> 		getMyAnnotationsIterable(String paramString);
+  public abstract Iterable<INoteAnnotation> 	getNoteAnnotationsIterable(String paramString);
+  public abstract INoteAnnotation[] 			getNoteAnnotations(String paramString);
+  public abstract Iterable<INoteAnnotation> 	getMyNoteAnnotationsIterable(String paramString);
+  public abstract INoteAnnotation[] 			getMyNoteAnnotations(String paramString);
+  public abstract Iterable<ITimelineAnnotation> getTimelineAnnotationsIterable(String paramString);
+  public abstract ITimelineAnnotation[] 		getTimelineAnnotations(String paramString);
+  public abstract Iterable<ITimelineAnnotation> getMyTimelineAnnotationsIterable(String paramString);
+  public abstract ITimelineAnnotation[] 		getMyTimelineAnnotations(String paramString);
+  
+  public abstract INoteAnnotation 			addNote(String paramString);
+  public abstract INoteAnnotation 			addNote(String paramString1, String paramString2);
+  public abstract INoteAnnotation 			addNote(Note paramNote);
+  public abstract void 						removeAnnotations(String paramString);
+  public abstract void 						removeAnnotation(IAnnotation paramIAnnotation); */
+    	}
+    	// pass up to base-type handler
+    	return getCollectionValue((ITaggableEntityBase)obj, col);
+    }
     
+    protected static Iterable<?> getCollectionValue(ITaggableEntityBase obj, CollectionName col) {
+    	switch (col) {
+			case KeywordTags:		return CollectionUtils.makeIterable(obj.getKeywordTags());
+			case MyKeywordTags:		return CollectionUtils.makeIterable(obj.getMyKeywordTags());
+			case MyTags:			return CollectionUtils.makeIterable(obj.getMyTags());
+			case Tags:				return CollectionUtils.makeIterable(obj.getTags());
+    	}
+    	// pass up to base-type handler
+    	return getCollectionValue((IEntityBase)obj, col);
+    }
+    
+    protected static Iterable<?> getCollectionValue(IEntityBase obj, CollectionName col) {
+    	switch (col) {
+			case MyProperties:		return MapEntry.makeIterable(obj.getMyProperties());
+	//		case MyResources:		return CollectionUtils.makeIterable(obj.getMyResources());	- removed between 1.0.4 and 1.1
+			case Properties:		return MapEntry.makeIterable(obj.getProperties());
+			case Resources:			return obj.getResourcesIterable();
+    	}
+    	// no handler found for specified collection
+    	return null;
+    }
+
+    /**
+     * base-class-like utility methods for all the models to handle base-type property fields 
+     * (to reduce large amounts of duplicate code throughout the model adapters)
+     * @param obj - the base-type object
+     * @param prop - the property to extract from the base-type object
+     */
+    /*    
+    protected static Object getPropertyValue(IResponseDataBase obj, PropertyName prop) {
+    	switch (prop) {
+    		// TODO
+    	}
+    	return getPropertyValue((IIOBase)obj, prop); 
+    }
+*//*
+    protected static Object getPropertyValue(IPurposeAndNotesEntity obj, PropertyName prop) {
+    	switch (prop) {
+    		// TODO
+    	}
+    	return getPropertyValue((ITimelineElement)obj, prop); 
+    }
+*/    
+    protected static Object getPropertyValue(ITimelineElement obj, PropertyName prop) {
+    	switch (prop) {
+			case EndTime:	return obj.getEndTime();
+			case StartTime:	return obj.getStartTime();
+    	}
+    	return getPropertyValue((IAnnotatableEntityBase)obj, prop); 
+    }
+/*
+    protected static Object getPropertyValue(IResponseDataBase obj, PropertyName prop) {
+    	switch (prop) {
+    	}
+    	return getPropertyValue((ITaggableEntityBase)obj, prop);
+    }
+*//*    
+    protected static Object getPropertyValue(IIOBase obj, PropertyName prop) {
+    	switch (prop) {
+    	}
+    	return getPropertyValue((ITaggableEntityBase)obj, prop);
+    }
+*/    
+    protected static Object getPropertyValue(IAnnotatableEntityBase obj, PropertyName prop) {
+    	switch (prop) {
+    		// no props
+    	}
+    	// pass up to base-type handler
+    	return getPropertyValue((ITaggableEntityBase)obj, prop);
+    }
+    
+    protected static Object getPropertyValue(ITaggableEntityBase obj, PropertyName prop) {
+    	switch (prop) {
+    		// no props
+    	}
+    	// pass up to base-type handler
+    	return getPropertyValue((IEntityBase)obj, prop);
+    }
+    
+    protected static Object getPropertyValue(IEntityBase obj, PropertyName prop) {
+    	switch (prop) {
+			case Owner:					return obj.getOwner();
+			case URI:					return obj.getURI();
+			case UUID:					return obj.getUuid();
+// FIXME	case SerializedLocation:	return obj.getSerializedLocation(); not in interface
+// FIXME	case SerializedName:		return obj.getSerializedName();
+			case URIString:				return obj.getURIString();
+    	}
+    	// no entry found for specified property
+    	return null;
+    }
+    
+    /*
+The big new one in 1.1 is IAnnotation and IAnnotatableEntityBase. 
+It's a pretty simple model (IAnnotatableEntityBase has a collection of IAnnotations per-user, like the ITaggableEntityBase=>KeywordTag relationship). 
+Let's start by exposing this simple model. 
+The usage, in fact, gets much more complicated
+	—annotations are grouped to "annotation groups" by keyword tag (think GMail's labels to get groups of messages), 
+	but I'm honestly not sure how we want to handle the complicated usage from OData beyond just exposing the annotations as a collection and letting the client sort things out.
+     */
 //    @SuppressWarnings("unchecked")
     protected Iterable<V> executeQueryInfo() {
         return (Iterable<V>)executeQueryInfo(getEntityType(), getQueryInfo());
