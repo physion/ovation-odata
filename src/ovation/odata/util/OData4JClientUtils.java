@@ -1,7 +1,5 @@
 package ovation.odata.util;
 
-import java.util.List;
-
 import org.core4j.Enumerable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
@@ -143,7 +141,6 @@ public class OData4JClientUtils {
         
         return count;
     }
-/* FIXME 0.6    
     private static void reportProperties(Enumerable<EdmProperty> properties){
         for(EdmProperty property : properties){
             String p = String.format("Property Name=%s Type=%s Nullable=%s",property.getName(),property.getType(),property.isNullable());
@@ -168,92 +165,8 @@ public class OData4JClientUtils {
             report("    "+ p);
         }
     }
-*/    
-    private static void reportProperties(List<EdmProperty> properties){
-        for(EdmProperty property : properties){
-            String p = String.format("Property Name=%s Type=%s Nullable=%s",property.name,property.type,property.nullable);
-            if (property.maxLength != null)
-                p = p + " MaxLength="+ property.maxLength;
-            if (property.unicode != null)
-                p = p + " Unicode="+ property.unicode;
-            if (property.fixedLength != null)
-                p = p + " FixedLength="+ property.fixedLength;   
-            
-            if (property.storeGeneratedPattern != null)
-                p = p + " StoreGeneratedPattern="+ property.storeGeneratedPattern;  
-            
-            if (property.fcTargetPath != null)
-                p = p + " TargetPath="+ property.fcTargetPath;
-            if (property.fcContentKind != null)
-                p = p + " ContentKind="+ property.fcContentKind;
-            if (property.fcKeepInContent != null)
-                p = p + " KeepInContent="+ property.fcKeepInContent;
-            if (property.fcEpmContentKind != null)
-                p = p + " EpmContentKind="+ property.fcEpmContentKind;
-            if (property.fcEpmKeepInContent != null)
-                p = p + " EpmKeepInContent="+ property.fcEpmKeepInContent;
-            report("    "+ p);
-        }
-    }    
     
-    public static void reportMetadata(EdmDataServices services){
-        
-        for(EdmSchema schema : services.getSchemas()){
-            report("Schema Namespace=%s",schema.namespace);
-            
-            for(EdmEntityType et : schema.entityTypes){
-                String ets = String.format("  EntityType Name=%s",et.name);
-                if (et.hasStream != null)
-                    ets = ets + " HasStream="+et.hasStream;
-                report(ets);
-                
-                for(String key : et.getKeys()){
-                    report("    Key PropertyRef Name=%s",key);
-                }
-                
-                reportProperties(et.properties);
-                for(EdmNavigationProperty np : et.getNavigationProperties()){
-                    report("    NavigationProperty Name=%s Relationship=%s FromRole=%s ToRole=%s",
-                            np.name,np.relationship.getFQNamespaceName(),np.fromRole.role,np.toRole.role);
-                }
-                 
-            }
-            for(EdmComplexType ct : schema.complexTypes){
-                report("  ComplexType Name=%s",ct.name);
-                
-                reportProperties(ct.properties);
-               
-            }
-            for(EdmAssociation assoc : schema.associations){
-                report("  Association Name=%s",assoc.name);
-                report("    End Role=%s Type=%s Multiplicity=%s",assoc.end1.role,assoc.end1.type.getFullyQualifiedTypeName(),assoc.end1.multiplicity);
-                report("    End Role=%s Type=%s Multiplicity=%s",assoc.end2.role,assoc.end2.type.getFullyQualifiedTypeName(),assoc.end2.multiplicity);
-            }
-            for(EdmEntityContainer ec : schema.entityContainers){
-                report("  EntityContainer Name=%s IsDefault=%s LazyLoadingEnabled=%s",ec.name,ec.isDefault,ec.lazyLoadingEnabled);
-                
-                for(EdmEntitySet ees : ec.entitySets){
-                    report("    EntitySet Name=%s EntityType=%s",ees.name,ees.type.getFullyQualifiedTypeName());
-                }
-                
-                for(EdmAssociationSet eas : ec.associationSets){
-                    report("    AssociationSet Name=%s Association=%s",eas.name,eas.association.getFQNamespaceName());
-                    report("      End Role=%s EntitySet=%s",eas.end1.role.role,eas.end1.entitySet.name);
-                    report("      End Role=%s EntitySet=%s",eas.end2.role.role,eas.end2.entitySet.name);
-                }
-                
-                for(EdmFunctionImport efi : ec.functionImports){
-                    report("    FunctionImport Name=%s EntitySet=%s ReturnType=%s HttpMethod=%s",
-                            efi.name,efi.entitySet==null?null:efi.entitySet.name,efi.returnType,efi.httpMethod);
-                    for(EdmFunctionParameter efp : efi.parameters){
-                        report("      Parameter Name=%s Type=%s Mode=%s",efp.name,efp.type,efp.mode);
-                    }
-                }
-            }
-        }
-    }
-/* FIXME 0.6    
-    public static void reportMetadata(EdmDataServices services){
+    private static void reportMetadata(EdmDataServices services){
         
         for(EdmSchema schema : services.getSchemas()){
             report("Schema Namespace=%s",schema.getNamespace());
@@ -309,5 +222,4 @@ public class OData4JClientUtils {
             }
         }
     }
-*/    
 }

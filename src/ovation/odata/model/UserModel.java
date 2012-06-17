@@ -10,7 +10,7 @@ import ovation.User;
 
 import com.google.common.collect.Maps;
 
-public class UserModel extends OvationModelBase<String,User> {
+public class UserModel extends OvationModelBase<User> {
 	static final Logger _log = Logger.getLogger(UserModel.class);
 
 
@@ -26,7 +26,6 @@ public class UserModel extends OvationModelBase<String,User> {
 	public String 			getTypeName()	{ return "User"; }
 	public String 			entityName() 	{ return "Users"; }
 	public Class<User>		getEntityType() { return User.class; }
-	public Class<String> 	getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue(Object target, String collectionName) 	{ return getCollection((User)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue(Object target, String propertyName) 		{ return getProperty  ((User)target, PropertyName.valueOf(propertyName)); }

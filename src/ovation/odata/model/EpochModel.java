@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents Epoch data to the OData4J framework
 a * @author Ron
  */
-public class EpochModel extends OvationModelBase<String,Epoch> {
+public class EpochModel extends OvationModelBase<Epoch> {
 	static final Logger _log = Logger.getLogger(EpochModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -27,7 +27,6 @@ public class EpochModel extends OvationModelBase<String,Epoch> {
 	public String 				entityName() 	{ return "Epochs"; }
 	public String 				getTypeName()	{ return "Epoch"; }
 	public Class<Epoch> 		getEntityType() { return Epoch.class; }
-	public Class<String> 		getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((Epoch)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((Epoch)target,   PropertyName.valueOf(propertyName)); }

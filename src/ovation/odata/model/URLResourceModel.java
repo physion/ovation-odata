@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents URLResource data to the OData4J framework
 a * @author Ron
  */
-public class URLResourceModel extends OvationModelBase<String,URLResource> {
+public class URLResourceModel extends OvationModelBase<URLResource> {
 	static final Logger _log = Logger.getLogger(URLResourceModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -27,7 +27,6 @@ public class URLResourceModel extends OvationModelBase<String,URLResource> {
 	public String 				getTypeName()	{ return "URLResource"; }
 	public String 				entityName() 	{ return "URLResources"; }
 	public Class<URLResource> 	getEntityType() { return URLResource.class; }
-	public Class<String> 		getKeyType() 	{ return String.class; }
 
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((URLResource)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((URLResource)target,   PropertyName.valueOf(propertyName)); }

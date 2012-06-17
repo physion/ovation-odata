@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents AnalysisRecord data to the OData4J framework
  * @author Ron
  */
-public class AnalysisRecordModel extends OvationModelBase<String,AnalysisRecord> {
+public class AnalysisRecordModel extends OvationModelBase<AnalysisRecord> {
 	static final Logger _log = Logger.getLogger(AnalysisRecordModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -33,7 +33,6 @@ public class AnalysisRecordModel extends OvationModelBase<String,AnalysisRecord>
 	public Object 		getPropertyValue(Object target, String propertyName)		{ return getProperty((AnalysisRecord)target, PropertyName.valueOf(propertyName)); }
 
 	public Class<AnalysisRecord> 	getEntityType() { return AnalysisRecord.class;	}
-	public Class<String> 			getKeyType() 	{ return String.class; }
 
 	public Func<Iterable<AnalysisRecord>> allGetter() {
 		return new Func<Iterable<AnalysisRecord>>() { 

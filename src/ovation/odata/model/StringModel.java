@@ -16,7 +16,7 @@ import com.google.common.collect.Maps;
  * via model (and thus appear as top-level types in the service - that seems like a bug to me)
  * @author Ron
  */
-public class StringModel extends ExtendedPropertyModel<String,String> {
+public class StringModel extends ExtendedPropertyModel<String> {
 	static final Logger _log = Logger.getLogger(StringModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -26,12 +26,11 @@ public class StringModel extends ExtendedPropertyModel<String,String> {
 		_propertyTypeMap.put("value", String.class);
 	}
 	
-	public StringModel() 	{ super(_propertyTypeMap, _collectionTypeMap); }
+	public StringModel() 	{ super(_propertyTypeMap, _collectionTypeMap, "value"); }
 	
 	public String 			getTypeName()	{ return "String"; }
 	public String 			entityName() 	{ return "_Strings"; }
 	public Class<String>	getEntityType() { return String.class; }
-	public Class<String> 	getKeyType() 	{ return String.class; }	// FIXME - TECHNICALLY this type has no key (it just adapts String so it can be returned as a collection-type)
 	
 	public Iterable<?> getCollectionValue(Object target, String collectionName) {
 		_log.error("unrecognized collection name '" + collectionName + "'");

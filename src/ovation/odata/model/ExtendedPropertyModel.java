@@ -23,25 +23,27 @@ import com.google.common.collect.Maps;
  *    
  * @author Ron
  *
- * @param <K> Key type - the type of object used to look up this type of Value
+ * @param <K> Key type - String (since odata4j 0.6)
  * @param <V> Value type - the type this model is about
  */
-public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
+public abstract class ExtendedPropertyModel<V> implements PropertyModel {
     public static final Logger _log = Logger.getLogger(ExtendedPropertyModel.class);
 
     /** allows us to attach the QueryInfo to the handling thread so we don't have to pass it around everywhere */
     private static final ThreadLocal<QueryInfo> _threadQueryInfo = new ThreadLocal<QueryInfo>();
     
-    protected Map<String,Class<?>> _fieldTypes;
-    protected Map<String,Class<?>> _collectionTypes;
+    private final Map<String,Class<?>>    _fieldTypes;
+    private final Map<String,Class<?>>    _collectionTypes;
+    private final String[]                _keyProperties;
     
     // default implementations - overwritten via either overwriting allGetter()/idGetter() or providing new 
     private Func<Iterable<V>> 	_allGetter = new Func<Iterable<V>>()	{  public Iterable<V> apply() { return CollectionUtils.makeEmptyIterable(); } };
-    private Func1<V,K>			_idGetter;	// no way to provide a default for this unless we want to always return null which is probably a bad idea 
+    private Func1<V,String>		_idGetter;	// no way to provide a default for this unless we want to always return null which is probably a bad idea 
     
-    protected ExtendedPropertyModel(Map<String,Class<?>> fieldTypes, Map<String,Class<?>> collectionTypes) {
+    protected ExtendedPropertyModel(Map<String,Class<?>> fieldTypes, Map<String,Class<?>> collectionTypes, String... keyProperties) {
         _fieldTypes = fieldTypes;
         _collectionTypes = collectionTypes;
+        _keyProperties = keyProperties;
     }
     
     /** @return the type of the specified collection within the associated entity type */
@@ -70,6 +72,11 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
         return _fieldTypes.get(propertyName); 
     }
     
+    /** @return the set of property names that represent the key for an entity */
+    public String[] getKeyPropertyNames() { 
+        return _keyProperties; 
+    }
+    
     /** @return the name of the entity set this model represents and by which it is registered with OData4J */
     public abstract String 		entityName();
     /** @return the elements of the specified collection with the associated entity type */
@@ -79,20 +86,18 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
     
     /** @return the type of Entity this Model is for */
     public abstract Class<V> 	getEntityType(); 
-    /** @return the primary-key type for this model's entity type */
-    public abstract Class<K> 	getKeyType();
     /** @return a Func object which, when apply()ed will return all top-level entities of this model's type */
     public Func<Iterable<V>> 	allGetter() { return _allGetter; }
     /** @return a Func1 object which, when apply()ed will return the primary key for the provided entity instance */
-    public Func1<V,K> 			idGetter() { return _idGetter; }
+    public Func1<V,String>		idGetter() { return _idGetter; }
     /** @return the name used to identify this type in the Ovation DB */
     public abstract String 		getTypeName();
     /** @return the value associated with the key */
     public V 					getEntityByKey(OEntityKey key) { return null; }
-    
+
     // to be called from sub-class' ctor
     protected void setAllGetter(Func<Iterable<V>> allGetter) 	{ _allGetter = allGetter; }
-    protected void setIdGetter(Func1<V,K> idGetter)				{ _idGetter = idGetter; }
+    protected void setIdGetter(Func1<V,String> idGetter)		{ _idGetter = idGetter; }
     
 //    /** @return the collection of values associated with the query */
 // FIXME	public abstract Iterable<V> executeQuery(String query);
@@ -102,20 +107,20 @@ public abstract class ExtendedPropertyModel<K,V> implements PropertyModel {
 
     
     // ExtendedPropertyModel instances keyed by value type
-    private static final HashMap<Class<?>, ExtendedPropertyModel<?,?>> _modelByTypeMap = Maps.newHashMap();
-    private static final HashMap<String, ExtendedPropertyModel<?,?>>   _modelByNameMap = Maps.newHashMap();
+    private static final HashMap<Class<?>, ExtendedPropertyModel<?>> _modelByTypeMap = Maps.newHashMap();
+    private static final HashMap<String, ExtendedPropertyModel<?>>   _modelByNameMap = Maps.newHashMap();
     
-    public static ExtendedPropertyModel<?,?> getPropertyModel(Class<?> type) {
+    public static ExtendedPropertyModel<?> getPropertyModel(Class<?> type) {
         return _modelByTypeMap.get(type);
     }
-    public static ExtendedPropertyModel<?,?> getPropertyModel(String name) {
+    public static ExtendedPropertyModel<?> getPropertyModel(String name) {
         return _modelByNameMap.get(name);
     }
-    public static void setPropertyModel(Class<?> type, ExtendedPropertyModel<?,?> model) {
+    public static void setPropertyModel(Class<?> type, ExtendedPropertyModel<?> model) {
         _modelByTypeMap.put(type, model);
         _modelByNameMap.put(model.entityName(), model);
     }
-    public static void addPropertyModel(ExtendedPropertyModel<?,?> model) {
+    public static void addPropertyModel(ExtendedPropertyModel<?> model) {
         setPropertyModel(model.getEntityType(), model);
     }
     public static Set<Class<?>> getEntityTypes() { 

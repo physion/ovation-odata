@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents KeywordTag data to the OData4J framework
 a * @author Ron
  */
-public class KeywordTagModel extends OvationModelBase<String,KeywordTag> {
+public class KeywordTagModel extends OvationModelBase<KeywordTag> {
 	static final Logger _log = Logger.getLogger(KeywordTagModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -27,7 +27,6 @@ public class KeywordTagModel extends OvationModelBase<String,KeywordTag> {
 	public String 				entityName() 	{ return "KeywordTags"; }
 	public String 				getTypeName()	{ return "KeywordTag"; }
 	public Class<KeywordTag> 	getEntityType() { return KeywordTag.class; }
-	public Class<String> 		getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((KeywordTag)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((KeywordTag)target,   PropertyName.valueOf(propertyName)); }

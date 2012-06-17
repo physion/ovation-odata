@@ -1,5 +1,5 @@
 # the database to which the server connects
-ovodata.DataContext.file            = /Users/barry/Documents/MATLAB/data/test.connection
+ovodata.DataContext.file            = /Users/barry/Documents/MATLAB/data/nesc_demo.connection
 #/Users/barry/Documents/MATLAB/data/quickstart.connection
 # don't allow more than 10 concurrent DataContexts (users)
 ovodata.DataContext.maxCacheSize    = 1

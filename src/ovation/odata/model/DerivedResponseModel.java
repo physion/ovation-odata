@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents DerivedResponse data to the OData4J framework
  * @author Ron
  */
-public class DerivedResponseModel extends OvationModelBase<String,DerivedResponse> {
+public class DerivedResponseModel extends OvationModelBase<DerivedResponse> {
 	static final Logger _log = Logger.getLogger(DerivedResponseModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -26,8 +26,6 @@ public class DerivedResponseModel extends OvationModelBase<String,DerivedRespons
 	public String 					entityName() 	{ return "DerivedResponses"; }
 	public String 					getTypeName()	{ return "DerivedResponse"; }
 	public Class<DerivedResponse> 	getEntityType() { return DerivedResponse.class;	}
-	public Class<String> 			getKeyType() 	{ return String.class; }
-
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((DerivedResponse)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((DerivedResponse)target,   PropertyName.valueOf(propertyName)); }

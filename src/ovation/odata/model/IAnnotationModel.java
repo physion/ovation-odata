@@ -11,7 +11,7 @@ import ovation.odata.util.CollectionUtils;
 
 import com.google.common.collect.Maps;
 
-public class IAnnotationModel extends OvationModelBase<String,IAnnotation> {
+public class IAnnotationModel extends OvationModelBase<IAnnotation> {
 	static final Logger _log = Logger.getLogger(UserModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -26,7 +26,6 @@ public class IAnnotationModel extends OvationModelBase<String,IAnnotation> {
 	public String 				getTypeName()	{ return "Annotation"; }
 	public String 				entityName() 	{ return "_Annotations"; }
 	public Class<IAnnotation>	getEntityType() { return IAnnotation.class; }
-	public Class<String> 		getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue(Object target, String collectionName) 	{ return getCollection((IAnnotation)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue(Object target, String propertyName) 		{ return getProperty  ((IAnnotation)target, PropertyName.valueOf(propertyName)); }

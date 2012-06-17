@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents Source data to the OData4J framework
 a * @author Ron
  */
-public class SourceModel extends OvationModelBase<String,Source> {
+public class SourceModel extends OvationModelBase<Source> {
 	static final Logger _log = Logger.getLogger(SourceModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -26,7 +26,6 @@ public class SourceModel extends OvationModelBase<String,Source> {
 	public String 			getTypeName()	{ return "Source"; }
 	public String			entityName() 	{ return "Sources"; }
 	public Class<Source> 	getEntityType() { return Source.class; }
-	public Class<String> 	getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((Source)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((Source)target,   PropertyName.valueOf(propertyName)); }

@@ -11,7 +11,7 @@
         <!--Building-->
 
         <!-- Testing -->
-        <dependency org="junit" name="junit" rev="4.9"/>
+        <dependency org="junit" name="junit" rev="4.10"/>
 
         <!-- Unmanaged dependencies -->
         <!-- jeldoclet, expression-tree-utils (+clojure), ovpredicate -->

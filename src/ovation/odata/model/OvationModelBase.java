@@ -38,11 +38,11 @@ import ovation.odata.util.CollectionUtils;
 import ovation.odata.util.DataContextCache;
 
 
-public abstract class OvationModelBase<K,V extends IEntityBase> extends ExtendedPropertyModel<K,V> {
+public abstract class OvationModelBase<V extends IEntityBase> extends ExtendedPropertyModel<V> {
     public static final String GET_ALL_PQL = "true";	// apparently this PQL "query" returns all instances of a type
 
     protected OvationModelBase(Map<String,Class<?>> fieldTypes, Map<String,Class<?>> collectionTypes) {
-    	super(fieldTypes, collectionTypes);
+    	super(fieldTypes, collectionTypes, PropertyName.UUID.name());
     }
     
 	// rules of thumb - 
@@ -95,14 +95,14 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         																									// TaggableEntityBase 
         																									// AnnotatableEntityBase 
         EntryFunctionName(String.class), Name(String.class), Notes(String.class), Project(Project.class), 
-        ScmRevision(String.class), ScmURL(String.class), SerializedLocation(String.class), 					// AnalysisRecord
+        ScmRevision(String.class), ScmURL(String.class), 													// AnalysisRecord
         Experiment(Experiment.class), Manufacturer(String.class),  											// ExternalDevice + Name(String.class), SerializedLocation(String.class), 		
         Label(String.class), ParentSource(Source.class), ParentRoot(Source.class),  						// Source + SerializedLocation(String.class), 				
         Data(byte[].class), UTI(String.class), 																// Resource + Name(String.class), Notes(String.class),  			
         URL(String.class), 																					// URLResource
         ExternalDevice(ExternalDevice.class), Units(String.class), 											// IOBase
         Epoch(Epoch.class), PluginID(String.class),  														// Stimulus + SerializedLocation(String.class), 			
-//        NumericData(NumericData.class), NumericDataType(NumericDataType.class), 							// ResponseDataBase 	
+        																									// ResponseDataBase 	
         																									// Response + Epoch(ovation.Epoch.class), SerializedLocation(String.class), UTI(String.class), 										 			
         Description(String.class), 																			// DerivedResponse + Epoch(Epoch.class), Name(String.class), SerializedLocation(String.class), 			 		
         EndTime(LocalDateTime.class), StartTime(LocalDateTime.class), 										// TimelineElement 		
@@ -270,16 +270,16 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         addTaggableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addAnalysisRecord(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.EntryFunctionName, PropertyName.Name, PropertyName.Notes, PropertyName.Project, PropertyName.ScmRevision, PropertyName.ScmURL, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.EntryFunctionName, PropertyName.Name, PropertyName.Notes, PropertyName.Project, PropertyName.ScmRevision, PropertyName.ScmURL); 
         addCollections(collectionTypeMap, CollectionName.AnalysisParameters, CollectionName.Epochs);
         addAnnotatableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addExternalDevice(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Experiment, PropertyName.Manufacturer, PropertyName.Name, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Experiment, PropertyName.Manufacturer, PropertyName.Name);
         addAnnotatableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addSource(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Label, PropertyName.ParentSource, PropertyName.ParentRoot, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Label, PropertyName.ParentSource, PropertyName.ParentRoot); 
         addCollections(collectionTypeMap, CollectionName.AllEpochGroups, CollectionName.AllExperiments, CollectionName.ChildLeafSourceDescendants, CollectionName.SourceChildren, CollectionName.EpochGroups, CollectionName.Experiments);
         addAnnotatableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
@@ -297,7 +297,7 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         addAnnotatableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addStimulus(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Epoch, PropertyName.PluginID, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Epoch, PropertyName.PluginID); 
         addCollections(collectionTypeMap, CollectionName.StimulusParameters);
         addIOBase(propertyTypeMap, collectionTypeMap);
     }    
@@ -307,12 +307,12 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         addIOBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addResponse(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Epoch, PropertyName.SerializedLocation, PropertyName.UTI); 
+    	addProperties (propertyTypeMap,   PropertyName.Epoch, PropertyName.UTI);  
         addCollections(collectionTypeMap, CollectionName.SamplingRates, CollectionName.SamplingUnits);
         addResponseDataBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addDerivedResponse(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Description, PropertyName.Epoch, PropertyName.Name, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Description, PropertyName.Epoch, PropertyName.Name); 
         addCollections(collectionTypeMap, CollectionName.DerivationParameters);
         addResponseDataBase(propertyTypeMap, collectionTypeMap);
     }    
@@ -321,12 +321,12 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         addAnnotatableEntityBase(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addEpochGroup(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.EpochCount, PropertyName.Experiment, PropertyName.Label, PropertyName.ParentEpochGroup, PropertyName.SerializedLocation, PropertyName.Source); 
+    	addProperties (propertyTypeMap,   PropertyName.EpochCount, PropertyName.Experiment, PropertyName.Label, PropertyName.ParentEpochGroup, PropertyName.Source); 
         addCollections(collectionTypeMap, CollectionName.ChildLeafGroupDescendants, CollectionName.GroupChildren, CollectionName.Epochs, CollectionName.EpochsUnsorted);   
         addTimelineElement(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addEpoch(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Duration, PropertyName.EpochGroup, PropertyName.ExcludeFromAnalysis, PropertyName.NextEpoch, PropertyName.PreviousEpoch, PropertyName.ProtocolID, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Duration, PropertyName.EpochGroup, PropertyName.ExcludeFromAnalysis, PropertyName.NextEpoch, PropertyName.PreviousEpoch, PropertyName.ProtocolID); 
         addCollections(collectionTypeMap, CollectionName.AnalysisRecords, CollectionName.DerivedResponses, CollectionName.DerivedResponseNames, CollectionName.ProtocolParameters, CollectionName.Responses, CollectionName.ResponseNames, CollectionName.StimuliNames, CollectionName.Stimuli);   
         addTimelineElement(propertyTypeMap, collectionTypeMap);
     }    
@@ -335,12 +335,11 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
         addTimelineElement(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addExperiment(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.SerializedLocation); 
         addCollections(collectionTypeMap, CollectionName.EpochGroups, CollectionName.Epochs, CollectionName.ExternalDevices, CollectionName.Projects, CollectionName.Sources);   
         addPurposeAndNotesEntity(propertyTypeMap, collectionTypeMap);
     }    
     protected static void addProject(Map<String,Class<?>> propertyTypeMap, Map<String,Class<?>> collectionTypeMap) {
-    	addProperties (propertyTypeMap,   PropertyName.Name, PropertyName.SerializedLocation); 
+    	addProperties (propertyTypeMap,   PropertyName.Name); 
         addCollections(collectionTypeMap, CollectionName.AnalysisRecords, CollectionName.AnalysisRecordNames, CollectionName.Experiments, CollectionName.MyAnalysisRecords, CollectionName.MyAnalysisRecordNames);   
         addPurposeAndNotesEntity(propertyTypeMap, collectionTypeMap);
     }    
@@ -443,7 +442,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case Project:			return obj.getProject();
     		case ScmRevision:		return obj.getScmRevision();
     		case ScmURL:			return convertURLToString(obj.getScmURL());
-    		case SerializedLocation:return obj.getSerializedLocation();
     		default: 				return getProperty((IAnnotatableEntityBase)obj, prop);
     	}
     }
@@ -461,7 +459,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case Experiment:		return obj.getExperiment();
     		case Manufacturer:		return obj.getManufacturer();
     		case Name:				return obj.getName();
-    		case SerializedLocation:return obj.getSerializedLocation();
     		default: 				return getProperty((IAnnotatableEntityBase)obj, prop);
     	}
     }
@@ -477,7 +474,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case Label:				return obj.getLabel();
     		case ParentSource: 		return obj.getParent();
     		case ParentRoot: 		return obj.getParentRoot();
-    		case SerializedLocation:return obj.getSerializedLocation();
     		default: 				return getProperty((IAnnotatableEntityBase)obj, prop);
     	}
     }
@@ -496,7 +492,7 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     // Resource extends AnnotatableEntityBase
     protected static Object getProperty(Resource obj, PropertyName prop) {
     	switch (prop) {
-    		case Data:	return obj.getData();
+    		case Data:	return obj.getDataBytes();
     		case Name:	return obj.getName();
     		case Notes:	return obj.getNotes();
     		case UTI:	return obj.getUti();
@@ -543,7 +539,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     	switch (prop) {
     		case Epoch:				return obj.getEpoch();
     		case PluginID:			return obj.getPluginID();
-    		case SerializedLocation:return obj.getSerializedLocation();
     		default: 				return getProperty((IIOBase)obj, prop);
     	}
     }
@@ -598,8 +593,8 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
 			case Shape:				return CollectionUtils.makeIterable(res != null ? res.getShape() 			: dRes.getShape());
 			case DimensionLabels:	return CollectionUtils.makeIterable(res != null ? res.getDimensionLabels() 	: dRes.getDimensionLabels());	// FIXME - should be added to IIOBase
 			case FloatingPointData:	return type == NumericDataFormat.FloatingPointDataType   ? CollectionUtils.makeIterable(data.getFloatingPointData()) : null;
-			case IntegerData:		return type == NumericDataFormat.IntegerDataType 		 ? CollectionUtils.makeIterable(data.getIntegerData()) 		 : null;
-			case UnsignedIntData:	return type == NumericDataFormat.UnsignedIntegerDataType ? CollectionUtils.makeIterable(data.getUnsignedIntData()) 	 : null;
+			case IntegerData:		return type == NumericDataFormat.SignedFixedPointDataType 		 ? CollectionUtils.makeIterable(data.getIntegerData()) 		 : null;
+			case UnsignedIntData:	return type == NumericDataFormat.UnsignedFixedPointDataType ? CollectionUtils.makeIterable(data.getUnsignedIntData()) 	 : null;
 			default: 				return getCollection((IIOBase)obj, col);
 		}
     }
@@ -608,7 +603,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     protected static Object getProperty(Response obj, PropertyName prop) {
     	switch (prop) {
     		case Epoch:				return obj.getEpoch();
-    		case SerializedLocation:return obj.getSerializedLocation();
     		case UTI:				return obj.getUTI();
     		default: 				return getProperty((IResponseData)obj, prop);
     	}
@@ -627,7 +621,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case Description: 			return obj.getDescription();
     		case Epoch:					return obj.getEpoch();
     		case Name:					return obj.getName();
-    		case SerializedLocation:	return obj.getSerializedLocation();
     		default: 					return getProperty((IResponseData)obj, prop);
     	}
     }
@@ -659,7 +652,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case Experiment:		return obj.getExperiment();
     		case Label:				return obj.getLabel();
     		case ParentEpochGroup:	return obj.getParent();
-    		case SerializedLocation:return obj.getSerializedLocation();
     		case Source:			return obj.getSource();
     		default: 				return getProperty((ITimelineElement)obj, prop);
     	}
@@ -683,7 +675,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     		case NextEpoch:				return obj.getNextEpoch();
     		case PreviousEpoch:			return obj.getPreviousEpoch();
     		case ProtocolID:			return obj.getProtocolID();
-    		case SerializedLocation:	return obj.getSerializedLocation();
     		default: 					return getProperty((ITimelineElement)obj, prop);
     	}
     }
@@ -704,7 +695,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     // Experiment extends PurposeAndNotesEntity (extends TimelineElement (extends AnnotatableEntityBase implements ITimelineElement) implements IOwnerNotes, IScientificPurpose)
     protected static Object getProperty(Experiment obj, PropertyName prop) {
     	switch (prop) {
-    		case SerializedLocation:	return obj.getSerializedLocation();
 	    	case Notes:					return obj.getNotes();		// 2 different interfaces so easier to just handle it here (for now)
 	    	case Purpose: 				return obj.getPurpose();
 	    	default: 					return getProperty((ITimelineElement)obj, prop); 
@@ -726,7 +716,6 @@ public abstract class OvationModelBase<K,V extends IEntityBase> extends Extended
     protected static Object getProperty(Project obj, PropertyName prop) {
     	switch (prop) {
 	    	case Name:					return obj.getName();
-	    	case SerializedLocation:	return obj.getSerializedLocation();
 	    	case Notes:					return obj.getNotes();		// 2 different interfaces so easier to just handle it here (for now)
 	    	case Purpose: 				return obj.getPurpose();
 	    	default: 					return getProperty((ITimelineElement)obj, prop); 

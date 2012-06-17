@@ -19,24 +19,35 @@
 		<filter-name>BasicAuthFilter</filter-name>
 		<servlet-name>OData4J</servlet-name>
 	</filter-mapping>
+    <filter-mapping>
+        <filter-name>BasicAuthFilter</filter-name>
+        <servlet-name>Media</servlet-name>
+    </filter-mapping>
 		
 	<servlet>
 		<servlet-name>OData4J</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
-			<param-name>com.sun.jersey.config.property.resourceConfigClass</param-name>
-         	<param-value>org.odata4j.producer.resources.ODataResourceConfig</param-value>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.odata4j.jersey.producer.resources.ODataApplication</param-value>
         </init-param>
 		<init-param>
 			<param-name>odata4j.producerfactory</param-name>
 			<param-value>ovation.odata.service.OvationOData4JProducer$Factory</param-value>
 		</init-param>
-		
         <load-on-startup>1</load-on-startup>
 	</servlet>
+    <servlet>
+        <servlet-name>Media</servlet-name>
+        <servlet-class>ovation.odata.service.servlet.MediaServlet</servlet-class>
+    </servlet>
 	
 	<servlet-mapping>
 		<servlet-name>OData4J</servlet-name>
 		<url-pattern>/Ovodata.svc/*</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Media</servlet-name>
+        <url-pattern>/media/*</url-pattern>
+    </servlet-mapping>
 </web-app>

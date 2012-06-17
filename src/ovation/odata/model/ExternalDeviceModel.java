@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents ExternalDevice data to the OData4J framework
 a * @author Ron
  */
-public class ExternalDeviceModel extends OvationModelBase<String,ExternalDevice> {
+public class ExternalDeviceModel extends OvationModelBase<ExternalDevice> {
 	static final Logger _log = Logger.getLogger(ExternalDeviceModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -27,7 +27,6 @@ public class ExternalDeviceModel extends OvationModelBase<String,ExternalDevice>
 	public String 					entityName() 	{ return "ExternalDevices"; }
 	public String 					getTypeName()	{ return "ExternalDevice"; }
 	public Class<ExternalDevice> 	getEntityType() { return ExternalDevice.class; }
-	public Class<String> 			getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((ExternalDevice)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((ExternalDevice)target,   PropertyName.valueOf(propertyName)); }

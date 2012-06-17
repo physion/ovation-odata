@@ -10,9 +10,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.odata4j.consumer.ODataConsumer;
+import org.odata4j.consumer.behaviors.OClientBehaviors;
 import org.odata4j.core.EntitySetInfo;
-import org.odata4j.core.OClientBehaviors;
 import org.odata4j.core.OEntity;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 import ovation.AnalysisRecord;
 import ovation.DataContext;
@@ -56,8 +57,8 @@ public class BasicGetTest {
 	
 	@BeforeClass 
 	public static void beforeAllTests() throws Throwable {
-//FIXME 0.6 - _odataClient = ODataJerseyConsumer.newBuilder(SERVICE_URL).setClientBehaviors(OClientBehaviors.basicAuth(USERNAME, PASSWORD)).build();
-		_odataClient = ODataConsumer.create(SERVICE_URL, OClientBehaviors.basicAuth(USERNAME, PASSWORD)); 
+	    _odataClient = ODataJerseyConsumer.newBuilder(SERVICE_URL).setClientBehaviors(OClientBehaviors.basicAuth(USERNAME, PASSWORD)).build();
+//		_odataClient = ODataConsumer.create(SERVICE_URL, OClientBehaviors.basicAuth(USERNAME, PASSWORD)); 
 		_dbContext = OvationDBTestHelper.getContext(USERNAME, PASSWORD, DB_CON_FILE);
 	}
 	

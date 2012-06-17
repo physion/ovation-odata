@@ -15,7 +15,7 @@ import ovation.Project;
 import ovation.Source;
 
 public class PopulateTestDBData {
-	public static final String USAGE = 
+	public static final String USAGE =
 			"ARGS: \n" +
 			" --dbFile=<obj DB file>\n" +
 			" --dbUser=<DB user name>\n" +
@@ -62,7 +62,7 @@ public class PopulateTestDBData {
 			try { context.close(); } catch (Exception ignore) {}
 		}
 	}
-	
+
 	public static void insertFixture(DataContext context,
 		int nProjects,
 		int expFactor,
@@ -87,7 +87,7 @@ public class PopulateTestDBData {
 				for (int c = 1; c <= srcFactor; c++) {
 					System.out.println("Cell " + c + " of " + srcFactor + "...");
 
-					Source cell = exp.insertSource("Cell " + c);
+					Source cell = context.insertSource("Cell " + c);
 
 					for (int g = 1; g <= epochGroupFactor; g++) {
 						context.beginTransaction();

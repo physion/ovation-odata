@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
  * presents Stimulus data to the OData4J framework
 a * @author Ron
  */
-public class StimulusModel extends OvationModelBase<String,Stimulus> {
+public class StimulusModel extends OvationModelBase<Stimulus> {
 	static final Logger _log = Logger.getLogger(StimulusModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap 	 = Maps.newHashMap();
@@ -27,7 +27,6 @@ public class StimulusModel extends OvationModelBase<String,Stimulus> {
 	public String 			getTypeName()	{ return "Stimulus"; }
 	public String			entityName() 	{ return "Stimuli"; }
 	public Class<Stimulus> 	getEntityType() { return Stimulus.class; }
-	public Class<String> 	getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> 	getCollectionValue	(Object target, String collectionName)	{ return getCollection((Stimulus)target, CollectionName.valueOf(collectionName)); }
 	public Object 		getPropertyValue	(Object target, String propertyName) 	{ return getProperty((Stimulus)target,   PropertyName.valueOf(propertyName)); }

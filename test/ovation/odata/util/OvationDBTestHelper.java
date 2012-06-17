@@ -23,9 +23,9 @@ import com.google.common.collect.Maps;
 
 public class OvationDBTestHelper {
 	private static final Logger _log = Logger.getLogger(OvationDBTestHelper.class);
-	
-	/** caller's responsible for closing DataContext when done 
-	 * @throws Exception - if there's a user-auth or other Ovation failure (abstracted to just Exception to reduce import needs of client) 
+
+	/** caller's responsible for closing DataContext when done
+	 * @throws Exception - if there's a user-auth or other Ovation failure (abstracted to just Exception to reduce import needs of client)
 	 */
 	public static DataContext getContext(String uid, String passwd) throws Exception {
 		return getContext(uid, passwd, System.getProperty("dataContext.file", "/var/lib/ovation/db/dev.connection"));
@@ -33,7 +33,7 @@ public class OvationDBTestHelper {
 	public static DataContext getContext(String uid, String passwd, String dbConFile) throws OvationException, UserAuthenticationException {
 		return Ovation.connect(dbConFile, uid, passwd);
 	}
-	
+
 	public static class ProjectData {
 		private static int _instance = 0;
 		private String 						_name 		= "No Name Project " + ++_instance;
@@ -41,14 +41,14 @@ public class OvationDBTestHelper {
 		private DateTime 					_startDate 	= new DateTime();
 		private DateTime 					_endDate 	= null;
 		private final List<ExperimentData> 	_experiments = Lists.newArrayList();
-		
+
 		public ProjectData name(String name) 		{ _name = name; return this; }
 		public ProjectData purpose(String purp) 	{ _purpose = purp; return this; }
 		public ProjectData start(DateTime start) 	{ _startDate = start; return this; }
 		public ProjectData end(DateTime end) 		{ _endDate = end; return this; }
 		public ProjectData add(ExperimentData exp)	{ _experiments.add(exp); return this; }
 	}
-	
+
 	public static class ExperimentData {
 		private static int _instance = 0;
 		private String 						_purpose 	= "No Purpose Experiement " + ++_instance;
@@ -56,29 +56,29 @@ public class OvationDBTestHelper {
 		private DateTime 					_endDate 	= null;
 		private final List<SourceData> 		_sources 	= Lists.newArrayList();
 		private final List<DeviceData> 		_devices	= Lists.newArrayList();
-		
+
 		public ExperimentData start(DateTime start) 	{ _startDate = start; return this; }
 		public ExperimentData end(DateTime end) 		{ _endDate = end; return this; }
 		public ExperimentData add(SourceData source)	{ _sources.add(source); return this; }
 		public ExperimentData add(DeviceData dev)		{ _devices.add(dev); return this; }
 	}
-	
+
 	public static class SourceData {
 		private static int _nextId = 0;
 		private String _label = "Cell " + ++_nextId;
 		private final List<EpochGroupData> 	_epochGroups= Lists.newArrayList();
-		
+
 		public SourceData label(String label) 		{ _label = label; return this; }
 		public SourceData add(EpochGroupData group)	{ _epochGroups.add(group); return this; }
 	}
-	
+
 	public static class EpochGroupData {
 		private static int _nextId = 0;
 		private String 					_label 		= "EpochGroup " + ++_nextId;
 		private DateTime				_startDate 	= new DateTime();
 		private DateTime 				_endDate 	= null;
 		private final List<EpochData>	_epochs 	= Lists.newArrayList();
-		
+
 		public EpochGroupData label(String label) 	{ _label = label; return this; }
 		public EpochGroupData start(DateTime start) { _startDate = start; return this; }
 		public EpochGroupData end(DateTime end) 	{ _endDate = end; return this; }
@@ -89,11 +89,11 @@ public class OvationDBTestHelper {
 		private static int _instance;
 		private String _name 			= "Device " + ++_instance;
 		private String _manufacturer 	= "No Manufacturer";
-		
+
 		public DeviceData name(String name) 		{ _name = name; return this; }
 		public DeviceData manufacturer(String name) { _manufacturer = name; return this; }
 	}
-	
+
 	public static class EpochData {
 		private class StimulusResponsePair {
 			final StimulusData _stimulus;
@@ -109,18 +109,18 @@ public class OvationDBTestHelper {
 		private final Map<String,Object> 	_params 	= Maps.newHashMap();
 		private final Map<String,StimulusResponsePair> 	_devStimRespPairs	= Maps.newHashMap();
 		private final List<String>			_tags		= Lists.newArrayList();
-		
+
 		public EpochData start(DateTime date)				{ if (date != null) _startDate = date; return this; }
 		public EpochData end(DateTime date) 				{ if (date != null) _endDate = date; return this; }
 		public EpochData protocolId(String id)				{ _protocolId = id; return this; }
 		public EpochData param(String name, Object value) 	{ _params.put(name,  value); return this; }
 		public EpochData tag(String tag) 					{ _tags.add(tag); return this; }
 		public EpochData addPair(String dev, StimulusData stim, ResponseData resp) {
-			_devStimRespPairs.put(dev, new StimulusResponsePair(stim, resp)); 
-			return this; 
+			_devStimRespPairs.put(dev, new StimulusResponsePair(stim, resp));
+			return this;
 		}
 	}
-	
+
 	public static class StimulusData {
 		private static int _instance = 0;
 		private String 						_pluginId 		= "Stimulus Plugin " + ++_instance;
@@ -128,7 +128,7 @@ public class OvationDBTestHelper {
 		private String[]					_dimLabels		= {"dimless"};
 		private final Map<String, Object> 	_deviceParams 	= Maps.newHashMap();
 		private final Map<String, Object> 	_params 		= Maps.newHashMap();
-		
+
 		public StimulusData pluginId(String id)				{ _pluginId = id; return this; }
 		public StimulusData units(String units)				{ _units = units; return this; }
 		public StimulusData devParam(String key, Object val){ _deviceParams.put(key,  val); return this; }
@@ -141,7 +141,7 @@ public class OvationDBTestHelper {
 				_defaultTestData[j] = Math.sin(j)/10000;
 			}
 		}
-		
+
 		private double[]					_data 			= _defaultTestData;
 		private String						_units			= "unitless";
 		private double						_sampleRate		= 42.0;
@@ -149,10 +149,10 @@ public class OvationDBTestHelper {
 		private String						_dimLabel		= "dimless";
 		private String						_dataUti		= "dUti";
 		private final Map<String, Object> 	_deviceParams 	= Maps.newHashMap();
-		
+
 		public ResponseData data(double[] data, String units)		{ _data = data; _units = units; return this; }
 		public ResponseData sampleRate(double rate, String units)	{ _sampleRate = rate; _sampleRateUnits = units; return this; }
-		
+
 		public ResponseData devParam(String key, Object val){ _deviceParams.put(key,  val); return this; }
 	}
 
@@ -166,14 +166,14 @@ public class OvationDBTestHelper {
 			Project p = context.insertProject(proj._name, proj._purpose, proj._startDate, proj._endDate);
 			for (ExperimentData ex : proj._experiments) {
 				Experiment exp = p.insertExperiment(ex._purpose, ex._startDate, ex._endDate);
-				
+
 				List<ExternalDevice> devices = Lists.newArrayList();
 				for (DeviceData dev : ex._devices) {
 					devices.add(exp.externalDevice(dev._name, dev._manufacturer));
 				}
-				
+
 				for (SourceData c : ex._sources) {
-					Source cell = exp.insertSource(c._label);
+					Source cell = context.insertSource(c._label);
 					for (EpochGroupData g : c._epochGroups) {
 						context.beginTransaction();
 						boolean transactionCommited = false;

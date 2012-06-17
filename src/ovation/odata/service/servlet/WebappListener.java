@@ -1,16 +1,14 @@
 package ovation.odata.service.servlet;
 
-import java.util.Properties;
+import org.apache.log4j.Logger;
+import ovation.odata.util.CollectionUtils;
+import ovation.odata.util.PropertyManager;
+import ovation.odata.util.Props;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import org.apache.log4j.Logger;
-
-import ovation.odata.util.CollectionUtils;
-import ovation.odata.util.PropertyManager;
-import ovation.odata.util.Props;
+import java.util.Properties;
 
 /**
  * an instance of this class ensures proper setup and tear-down of the web-application's 
@@ -26,7 +24,7 @@ public class WebappListener implements ServletContextListener {
 
 		Properties rootProps = PropertyManager.getProperties(null);
 		// add web.xml init-params to the global root properties
-		for (String name : CollectionUtils.makeIterable(ctx.getInitParameterNames())) {
+		for (String name : (Iterable<String>)CollectionUtils.makeIterable(ctx.getInitParameterNames())) {
 			rootProps.setProperty(name, ctx.getInitParameter(name));
 		}
 

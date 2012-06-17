@@ -5,18 +5,12 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.core4j.CoreUtils;
-/* FIXME 0.6
 import org.odata4j.jersey.producer.resources.ODataApplication;
 import org.odata4j.jersey.producer.resources.ODataProducerProvider;
 import org.odata4j.jersey.producer.server.JerseyServer;
+import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.resources.RootApplication;
 import org.odata4j.producer.server.ODataServer;
-*/
-import org.odata4j.producer.ODataProducer;
-import org.odata4j.producer.resources.CrossDomainResourceConfig;
-import org.odata4j.producer.resources.ODataProducerProvider;
-import org.odata4j.producer.resources.ODataResourceConfig;
-import org.odata4j.producer.server.JerseyServer;
 
 import ovation.odata.util.PropertyManager;
 import ovation.odata.util.Props;
@@ -46,7 +40,7 @@ public class StandaloneJerseyServer {
 		boolean logRequest 	= Props.getProp(props, Props.LOG_REQUEST, Props.LOG_REQUEST_DEFAULT);
 		boolean logResponse	= Props.getProp(props, Props.LOG_RESPONSE, Props.LOG_RESPONSE_DEFAULT);
 		
-		JerseyServer server = null;
+		ODataServer server = null;
 		ODataProducer producer = null;
 		try {
 	        // register the producer as the static instance, then launch the http server
@@ -65,30 +59,25 @@ public class StandaloneJerseyServer {
 					return (List<HttpContext>) tmp;
 				}
 
-// FIXME 0.6				public ODataServer start() {
-// FIXME 0.6					ODataServer odServer = super.start();	//FIXME - changed with Odata4j 0.6 - need to re-test!!!
-				public void start() {
-					super.start();				
-					//TODO QueryInfo -> EntityQueryInfo (how different?)
+				public ODataServer start() {
+				    ODataServer odServer = super.start();
 					HttpServer server = CoreUtils.getFieldValue(this, "server", HttpServer.class);
 					Authenticator authenticator = new JerseyAuthenticator();
 					for (HttpContext ctx : getAllContexts(server)) {
 						ctx.setAuthenticator(authenticator);
 					}
-// FIXME 0.6					return odServer;
+					return odServer;
 				}				
 			};
 			
-// FIXME 0.6	        server.setODataApplication(ODataApplication.class);
-// FIXME 0.6	        server.setRootApplication(RootApplication.class);
-	        server.addAppResourceClasses(new ODataResourceConfig().getClasses());
-	        server.addRootResourceClasses(new CrossDomainResourceConfig().getClasses());
+			server.setODataApplication(ODataApplication.class);
+			server.setRootApplication(RootApplication.class);
 	        
 	        if (logRequest) {
-	        	server.addJerseyRequestFilter(LoggingFilter.class); // log all requests
+	        	((JerseyServer)server).addJerseyRequestFilter(LoggingFilter.class); // log all requests
 	        }
 	        if (logResponse) {
-	        	server.addJerseyResponseFilter(LoggingFilter.class);
+	            ((JerseyServer)server).addJerseyResponseFilter(LoggingFilter.class);
 	        }
 	        
 	        server.start();

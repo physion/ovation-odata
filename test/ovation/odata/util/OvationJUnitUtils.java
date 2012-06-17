@@ -1,41 +1,15 @@
 package ovation.odata.util;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.core4j.Enumerable;
 import org.odata4j.consumer.ODataConsumer;
 import org.odata4j.core.OEntity;
-
-import ovation.AnalysisRecord;
-import ovation.DataContext;
-import ovation.DerivedResponse;
-import ovation.Epoch;
-import ovation.EpochGroup;
-import ovation.Experiment;
-import ovation.ExternalDevice;
-import ovation.IAnnotatableEntityBase;
-import ovation.IAnnotation;
-import ovation.IEntityBase;
-import ovation.IIOBase;
-import ovation.IResponseDataBase;
-import ovation.ITaggableEntityBase;
-import ovation.ITimelineElement;
-import ovation.KeywordTag;
-import ovation.NumericData;
-import ovation.NumericDataType;
-import ovation.Project;
-import ovation.Resource;
-import ovation.Response;
-import ovation.Source;
-import ovation.Stimulus;
-import ovation.URLResource;
-import ovation.User;
+import ovation.*;
 import ovation.odata.model.OvationModelBase;
-import ovation.odata.model.dao.Property;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * very similar to the model hierarchy in OvationModelBase, but this one compares OData4J OEntity fields with Ovation DB fields
@@ -434,7 +408,7 @@ EXPERIMENT links - [
 		
 		Assert.assertEquals(msg, fromDb.getNotes(), 			OData4JClientUtils.getStringProperty(fromSvc, 	"Notes"));
 		Assert.assertEquals(msg, fromDb.getName(), 				OData4JClientUtils.getStringProperty(fromSvc, 	"Name"));
-		JUnitUtils.assertEquals(msg, fromDb.getData(), 			OData4JClientUtils.getByteArrayProperty(fromSvc,"Data"));
+		JUnitUtils.assertEquals(msg, fromDb.getDataBytes(), 			OData4JClientUtils.getByteArrayProperty(fromSvc,"Data"));
 		Assert.assertEquals(msg, fromDb.getUti(), 				OData4JClientUtils.getStringProperty(fromSvc, 	"UTI"));
 
 		/*
