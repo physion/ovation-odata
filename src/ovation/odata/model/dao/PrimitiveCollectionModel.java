@@ -15,39 +15,41 @@ import com.google.common.collect.Maps;
  *
  * @param <T>
  */
-public class PrimitiveCollectionModel<T> extends ExtendedPropertyModel<String,T> {
-	static final Logger _log = Logger.getLogger(PrimitiveCollectionModel.class);
+public class PrimitiveCollectionModel<T> extends ExtendedPropertyModel<T> {
+    static final Logger _log = Logger.getLogger(PrimitiveCollectionModel.class);
 
-	static Map<String,Class<?>> getMap(Class<?> type) {
-		Map<String,Class<?>> typeMap = Maps.newHashMap();
-		if (type != null) {
-			typeMap.put("value", type);
-		}
-		return typeMap;
-	}
+    static Map<String,Class<?>> getMap(Class<?> type) {
+        Map<String,Class<?>> typeMap = Maps.newHashMap();
+        if (type != null) {
+            typeMap.put("value", type);
+        }
+        return typeMap;
+    }
 
-	final Class<T> _type;
-	final String _typeName;
-	public PrimitiveCollectionModel(Class<T> type) { 
-		super(getMap(type), getMap(null));
-		_type = type;
-		_typeName = type.getSimpleName();
-		setIdGetter(new Func1<T, String>() { public String apply(T record) { return String.valueOf(record); } });
-	}
-	
-	public String 			getTypeName()	{ return _typeName; }
-	public String 			entityName() 	{ return "_" + _typeName + "s"; }
-	public Class<String> 	getKeyType() 	{ return String.class; }
-	public Class<T>			getEntityType() { return _type; }
-	
-	public Iterable<?> getCollectionValue(Object target, String collectionName) {
-		_log.error("unrecognized collection name '" + collectionName + "'");
-		return null;
-	}
-
-	public Object getPropertyValue(Object target, String propertyName) {
-		if ("value".equals(propertyName)) return target;
-		_log.error("unrecognized property name '" + propertyName + "'");
-		return null;
-	}
+    final Class<T> _type;
+    final String _typeName;
+    public PrimitiveCollectionModel(Class<T> type) { 
+        super(getMap(type), getMap(null), "value");
+        _type = type;
+        _typeName = type.getSimpleName();
+        setIdGetter(new Func1<T, String>() { public String apply(T record) { return String.valueOf(record); } });
+    }
+    
+    @Override 
+    public String     getTypeName()           { return _typeName; }
+    @Override 
+    public String     entityName()            { return "_" + _typeName + "s"; }
+    @Override 
+    public Class<T>   getEntityType()         { return _type; }
+    @Override 
+    public Iterable<?> getCollectionValue(Object target, String collectionName) {
+        _log.error("unrecognized collection name '" + collectionName + "'");
+        return null;
+    }
+    @Override 
+    public Object getPropertyValue(Object target, String propertyName) {
+        if ("value".equals(propertyName)) return target;
+        _log.error("unrecognized property name '" + propertyName + "'");
+        return null;
+    }
 }

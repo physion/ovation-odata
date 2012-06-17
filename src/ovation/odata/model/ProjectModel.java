@@ -16,7 +16,7 @@ import com.google.common.collect.Maps;
  * presents Project data to the OData4J framework
  * @author Ron
  */
-public class ProjectModel extends OvationModelBase<String,Project> {
+public class ProjectModel extends OvationModelBase<Project> {
 	static final Logger _log = Logger.getLogger(ProjectModel.class);
 
 	static final HashMap<String,Class<?>> _propertyTypeMap = Maps.newHashMap();
@@ -28,7 +28,6 @@ public class ProjectModel extends OvationModelBase<String,Project> {
 	public String 			entityName()	{ return "Projects"; }
 	public String 			getTypeName() 	{ return "Project";	}
 	public Class<Project> 	getEntityType() { return Project.class; }
-	public Class<String> 	getKeyType() 	{ return String.class; }
 	
 	public Iterable<?> getCollectionValue(Object target, String collectionName) { return getCollection((Project)target, CollectionName.valueOf(collectionName)); }
 	public Object getPropertyValue(Object target, String propertyName) 			{ return getProperty((Project)target, PropertyName.valueOf(propertyName)); }

@@ -3,14 +3,10 @@ package ovation.odata.util;
 import java.io.IOException;
 
 import org.odata4j.producer.QueryInfo;
-import org.odata4j.producer.resources.CrossDomainResourceConfig;
-import org.odata4j.producer.resources.ODataResourceConfig;
-import org.odata4j.producer.server.JerseyServer;
-/* FIXME 0.6
 import org.odata4j.producer.resources.RootApplication;
+import org.odata4j.producer.server.ODataServer;
 import org.odata4j.jersey.producer.resources.ODataApplication;
 import org.odata4j.jersey.producer.server.JerseyServer;
-*/
 import com.sun.jersey.api.container.filter.LoggingFilter;
 
 /**
@@ -18,10 +14,11 @@ import com.sun.jersey.api.container.filter.LoggingFilter;
  * @author Ron
  */
 public class OData4JServerUtils {
-
+    public enum ServerType {
+        JERSEY,
+    }
     public static void hostODataServer(String baseUri) {
-       
-        JerseyServer server= startODataServer(baseUri);
+        ODataServer server = startODataServer(ServerType.JERSEY, baseUri);
         try {
 	        System.out.println("Press CR to exit");
 	        try { System.in.read(); } catch (IOException iox) {}
@@ -30,12 +27,13 @@ public class OData4JServerUtils {
         }
     }
     
-    public static JerseyServer startODataServer(String baseUri) {
+    public static ODataServer startODataServer(ServerType type, String baseUri) {
+        // ignore type for now
         JerseyServer server = new JerseyServer(baseUri);
-//FIXME 0.6        server.setODataApplication(ODataApplication.class);
-//FIXME 0.6        server.setRootApplication(RootApplication.class);
-        server.addAppResourceClasses(new ODataResourceConfig().getClasses());
-        server.addRootResourceClasses(new CrossDomainResourceConfig().getClasses());
+        server.setODataApplication(ODataApplication.class);
+        server.setRootApplication(RootApplication.class);
+//old        server.addAppResourceClasses(new ODataResourceConfig().getClasses());
+//old        server.addRootResourceClasses(new CrossDomainResourceConfig().getClasses());
 
         server.addJerseyRequestFilter(LoggingFilter.class); // log all requests
 

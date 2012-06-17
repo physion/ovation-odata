@@ -3,11 +3,12 @@ package ovation.odata.client;
 import org.apache.log4j.Logger;
 import org.core4j.Enumerable;
 import org.odata4j.consumer.ODataConsumer;
-import org.odata4j.core.OClientBehaviors;
+import org.odata4j.consumer.behaviors.OClientBehaviors;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OEntityGetRequest;
 import org.odata4j.core.OEntityKey;
 import org.odata4j.core.OQueryRequest;
+import org.odata4j.jersey.consumer.ODataJerseyConsumer;
 
 public class OvationOData4JClient {
 	public static final Logger _log = Logger.getLogger(OvationOData4JClient.class);
@@ -41,7 +42,7 @@ public class OvationOData4JClient {
 	}
 
 	public static ODataConsumer createClient(String url, String user, String password) {
-		return ODataConsumer.create(url, OClientBehaviors.basicAuth(user, password));
+        return ODataJerseyConsumer.newBuilder(url).setClientBehaviors(OClientBehaviors.basicAuth(user, password)).build();
 	}
 
 	public static Enumerable<OEntity> getAll(ODataConsumer client, String entitySetName) {

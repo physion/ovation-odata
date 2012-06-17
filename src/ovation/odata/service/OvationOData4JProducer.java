@@ -1,5 +1,6 @@
 package ovation.odata.service;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -7,13 +8,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.core4j.Func;
-import org.core4j.Func1;
 import org.odata4j.core.OEntity;
 import org.odata4j.core.OEntityKey;
 import org.odata4j.edm.EdmDataServices;
 import org.odata4j.edm.EdmEntitySet;
 import org.odata4j.producer.EntitiesResponse;
-// FIXME 0.6 import org.odata4j.producer.EntityQueryInfo;
+import org.odata4j.producer.EntityQueryInfo;
 import org.odata4j.producer.EntityResponse;
 import org.odata4j.producer.ODataProducer;
 import org.odata4j.producer.ODataProducerFactory;
@@ -21,7 +21,6 @@ import org.odata4j.producer.QueryInfo;
 import org.odata4j.producer.Responses;
 import org.odata4j.producer.exceptions.NotFoundException;
 import org.odata4j.producer.inmemory.InMemoryProducer;
-import org.odata4j.producer.inmemory.PropertyModel;
 
 import ovation.odata.model.ExtendedPropertyModel;
 import ovation.odata.model.OvationModelBase;
@@ -79,23 +78,38 @@ public class OvationOData4JProducer extends InMemoryProducer {
 		Set<String> allEntityNames = ExtendedPropertyModel.getEntityNames();
 		for (String name : allEntityNames) {
 			ExtendedPropertyModel model = ExtendedPropertyModel.getPropertyModel(name);
-			register(model.getEntityType(), model, model.getKeyType(), name, model.allGetter(), model.idGetter());
+			register(model.getEntityType(), model, name, model.allGetter());
 		}
 	}
 	
-	/** for debug purposes only */
-	public <TEntity, TKey> void register(Class<TEntity> entityClass, PropertyModel propertyModel, Class<TKey> keyClass,
-			String entitySetName, Func<Iterable<TEntity>> get, Func1<TEntity, TKey> id) {
-		if (_log.isDebugEnabled()) {
-			_log.debug("register(eType:" + entityClass + ", model:" + propertyModel + ", kType:" + keyClass + ", name:" + entitySetName + ", getAll:" + get + ", getId:" + id);
-		}
-		super.register(entityClass, propertyModel, keyClass, entitySetName, get, id);
-	}
-	
+    /**
+     * @param entityClass       the Java class type of the entity being registered
+     * @param propertyModel     the model instance that handles the registered type
+     * @param entitySetName     the name added to the URL to identify a request for this entity type
+     * @param entityTypeName    TODO ?? (unknown)
+     * @param get               Func object which returns Iterable<TEntity> to get all entities of this type
+     * @param keys              one or more keys for the entity TODO ?? (not sure)
+     */
+    public <TEntity> void register( final Class<TEntity> entityClass, 
+                                    final ExtendedPropertyModel<?> propertyModel, 
+                                    final String entitySetName,
+                                    final Func<Iterable<TEntity>> get) {
+        final String entityTypeName = entitySetName;
+        final String[] keys = propertyModel.getKeyPropertyNames();
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("register(class:" + entityClass + ", model:" + propertyModel 
+                            + ", name:" + entitySetName + ", type:" + entityTypeName 
+                            + ", getAll:" + get + ", keys:" + Arrays.toString(keys));
+        }
+        super.register(entityClass, propertyModel, entitySetName, entityTypeName, get, keys);
+    }
+    
 	/** 
 	 * Obtains the service metadata for this producer.
 	 * @return a fully-constructed metadata object
 	 */
+    @Override
 	public EdmDataServices getMetadata() {
 		try {
 			EdmDataServices result = super.getMetadata();
@@ -117,6 +131,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @return the newly-created entity, fully populated with the key and default properties
      * @see <a href="http://www.odata.org/developers/protocols/operations#CreatingnewEntries">[odata.org] Creating new Entries</a>
      */
+    @Override
 	public EntityResponse createEntity(String entitySetName, OEntity entity) {
 		return super.createEntity(entitySetName, entity);
 	}
@@ -131,6 +146,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @return the newly-created entity, fully populated with the key and default properties, and linked to the existing entity
      * @see <a href="http://www.odata.org/developers/protocols/operations#CreatingnewEntries">[odata.org] Creating new Entries</a>
      */
+    @Override
 	public EntityResponse createEntity(String entitySetName, OEntityKey entityKey, String navProp, OEntity entity) {
 		return super.createEntity(entitySetName, entityKey, navProp, entity);
 	}
@@ -142,6 +158,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @param queryInfo  the additional constraints to apply to the entities
      * @return a packaged collection of entities to pass back to the client
      */
+    @Override
 	public EntitiesResponse getEntities(String entitySetName, QueryInfo queryInfo) {
 		if (_log.isDebugEnabled()) {
 			_log.debug("getEntities(set:" + entitySetName + ", queryInfo:{" + OData4JServerUtils.toString(queryInfo) + "}");
@@ -163,7 +180,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @return the matching entity
      */
 	@Override
-	public EntityResponse getEntity(String entitySetName, OEntityKey entityKey, QueryInfo queryInfo) {	// FIXME 0.6 EntityQueryInfo
+	public EntityResponse getEntity(String entitySetName, OEntityKey entityKey, EntityQueryInfo queryInfo) { 
 		if (_log.isDebugEnabled()) {
 			_log.debug("getEntity(set:" + entitySetName + ", key:" + entityKey + ", queryInfo:{" + OData4JServerUtils.toString(queryInfo) + "}");
 		}
@@ -184,6 +201,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @param entity  the entity modifications sent from the client
      * @see <a href="http://www.odata.org/developers/protocols/operations#UpdatingEntries">[odata.org] Updating Entries</a>
      */
+    @Override
 	public void mergeEntity(String entitySetName, OEntity entity) {
 		super.mergeEntity(entitySetName, entity);
 	}
@@ -195,6 +213,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @param entity  the entity modifications sent from the client
      * @see <a href="http://www.odata.org/developers/protocols/operations#UpdatingEntries">[odata.org] Updating Entries</a>
      */
+	@Override
 	public void updateEntity(String entitySetName, OEntity entity) {
 		super.updateEntity(entitySetName, entity);
 	}
@@ -206,6 +225,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @param entityKey  the entity-key of the entity
      * @see <a href="http://www.odata.org/developers/protocols/operations#DeletingEntries">[odata.org] Deleting Entries</a>
      */
+    @Override
 	public void deleteEntity(String entitySetName, OEntityKey entityKey) {
 		super.deleteEntity(entitySetName, entityKey);
 	}
@@ -220,6 +240,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
      * @param queryInfo  additional constraints to apply to the result
      * @return the resulting entity, entities, or property value
      */
+	@Override
 	public EntitiesResponse getNavProperty(String entitySetName, OEntityKey entityKey, String navProp, QueryInfo queryInfo) {
 		ExtendedPropertyModel.setQueryInfo(queryInfo);
 		try {
@@ -233,7 +254,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
 			}
 			
 			// find the property-model associated with this entity set name
-			ExtendedPropertyModel<?, ?> model = ExtendedPropertyModel.getPropertyModel(entitySetName);
+			ExtendedPropertyModel<?> model = ExtendedPropertyModel.getPropertyModel(entitySetName);
 			
 			if (_log.isInfoEnabled()) {
 				_log.info("getNavProperty(set:" + entitySetName + ", key:" + entityKey + ", nav:" + navProp 
@@ -266,7 +287,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
 				    throw new NotFoundException(navProp + " collection not found in '" + entitySetName + "'");
 				}
 			}
-			ExtendedPropertyModel<?, ?> subModel = ExtendedPropertyModel.getPropertyModel(navPropType);
+			ExtendedPropertyModel<?> subModel = ExtendedPropertyModel.getPropertyModel(navPropType);
 			if (subModel == null) {
 				_log.warn("Unrecognized type '" + navPropType + "' of '" + navProp + "' within '" + entitySetName + "'");
 			    throw new NotFoundException(navProp + " collection type '" + navPropType + "' is not known");
@@ -333,6 +354,7 @@ public class OvationOData4JProducer extends InMemoryProducer {
     /**
      * Releases any resources managed by this producer.
      */
+    @Override
 	public void close() {
 		// clean-up
 		DataContextCache.close();

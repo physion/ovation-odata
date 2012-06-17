@@ -24,7 +24,7 @@ public class Property {
 	 * to adapt this type to the OData4J plumbing
 	 * @author Ron
 	 */
-	public static class Model extends ExtendedPropertyModel<String,Property> {
+	public static class Model extends ExtendedPropertyModel<Property> {
 		static final Logger _log = Logger.getLogger(Model.class);
 
 		private enum PropertyName { key, value}
@@ -40,14 +40,13 @@ public class Property {
 		}
 		
 		public Model() 	{ 
-			super(_propertyTypeMap, _collectionTypeMap);
+			super(_propertyTypeMap, _collectionTypeMap, PropertyName.key.name());
 			setIdGetter(new Func1<Property,String>() { public String apply(Property record) { return record != null ? record.getKey() : null; } });
 		}
 		
 		public String 			getTypeName()	{ return "Property"; }
 		public String 			entityName() 	{ return "_Properties"; }
 		public Class<Property>	getEntityType() { return Property.class; }
-		public Class<String> 	getKeyType() 	{ return String.class; }
 		
 		public Iterable<?> getCollectionValue(Object target, String collectionName) {
 			_log.error("unrecognized collection name '" + collectionName + "'");
